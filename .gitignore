@@ -1,0 +1,43 @@
+# --- Общие системные файлы ---
+*.log
+.htaccess
+.env
+docker-compose.yml
+php.ini
+/dump/
+
+# --- WP Core ---
+/wordpress/wp-admin/
+/wordpress/wp-includes/
+/wordpress/index.php
+/wordpress/license.txt
+/wordpress/readme.html
+/wordpress/xmlrpc.php
+/wordpress/wp-*.php
+/wordpress/wp-config.php
+
+# --- Контент, который игнорируется ---
+/wordpress/wp-content/index.php
+/wordpress/wp-content/languages/
+/wordpress/wp-content/plugins/
+/wordpress/wp-content/uploads/
+!/wordpress/wp-content/themes/ # Разрешаем папку с темами
+
+# --- Разрешаем только свою тему ---
+/wordpress/wp-content/themes/*
+!/wordpress/wp-content/themes/ava_theme/
+
+# --- Игнорируем стандартные темы ---
+/wordpress/wp-content/themes/twenty*/
+
+# --- Игнорируем пустые файлы тем и плагинов ---
+/wordpress/wp-content/plugins/index.php
+/wordpress/wp-content/themes/index.php
+/.idea/.gitignore
+/.idea/bitrixlangplugin.xml
+/.idea/modules.xml
+/.idea/php.xml
+/.idea/polihim.iml
+/.idea/vcs.xml
+/.idea/watcherTasks.xml
+/wordpress/wp-content/logs/index.html
