@@ -21,7 +21,7 @@ php.ini
 /wordpress/wp-content/languages/
 /wordpress/wp-content/plugins/
 /wordpress/wp-content/uploads/
-!/wordpress/wp-content/themes/ # Разрешаем папку с темами
+!/wordpress/wp-content/themes/
 
 # --- Разрешаем только свою тему ---
 /wordpress/wp-content/themes/*
