@@ -1,0 +1,82 @@
+@font-face {
+  font-family: Manrope;
+  src: url("../src/fonts/Manrope-Light.ttf");
+  font-weight: 300;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: Manrope;
+  src: url("../src/fonts/Manrope-Medium.ttf");
+  font-weight: 500;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: Anticva;
+  src: url("../src/fonts/Anticva-Regular.otf");
+  font-weight: 400;
+  font-display: swap;
+}
+
+@mixin laptop {
+  @media (max-width: 1366px) {
+    @content;
+  }
+}
+
+@mixin tablet {
+  @media (max-width: 1024px) {
+    @content;
+  }
+}
+
+@mixin mobile {
+  @media (max-width: 576px) {
+    @content;
+  }
+}
+
+html {
+  font-size: 1.39vw;
+  line-height: 1;
+  -webkit-text-size-adjust: 100%;
+  scroll-behavior: smooth;
+
+  @include tablet {
+    font-size: 2.60vw;
+  }
+
+  @include mobile {
+    font-size: 5.56vw;
+  }
+}
+
+body{
+  background-color: #FFFFFF;
+  scroll-behavior: smooth;
+}
+
+.container{
+  position: relative;
+  margin: 4.4rem 2.4rem 0 2.4rem;
+}
+
+.grid-12{
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 0 1.2rem;
+
+  @include tablet {
+    grid-template-columns: repeat(6, 1fr);
+  }
+
+  @include mobile {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@import "inc/_header";
+@import "pages/_main";
+@import "inc/_footer";

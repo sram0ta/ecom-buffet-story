@@ -71,6 +71,78 @@ function buffet_story_content_width() {
 add_action( 'after_setup_theme', 'buffet_story_content_width', 0 );
 
 function buffet_story_scripts() {
-	wp_enqueue_style( 'buffet-story-style', get_stylesheet_uri(), array(), _S_VERSION );
+    wp_enqueue_style( 'buffet-story-style', get_stylesheet_uri(), array(), _S_VERSION );
+    wp_enqueue_style( 'main-css', get_stylesheet_directory_uri() . '/src/index.css' );
+    wp_enqueue_style( 'swiper-css', get_stylesheet_directory_uri() . '/src/css/vendor/swiper-bundle.min.css' );
+
+
+    wp_enqueue_script( 'swiper-js',  get_stylesheet_directory_uri() . '/src/js/vendor/swiper-bundle.min.js', array(), null, true );
+    wp_enqueue_script( 'main-js',  get_stylesheet_directory_uri() . '/src/index.js', array(), null, true );
+    wp_enqueue_script( 'cart-js',  get_stylesheet_directory_uri() . '/src/cart.js', array(), null, true );
+
+    $cart_map = array();
+    if ( function_exists('WC') && WC()->cart ) {
+        foreach ( WC()->cart->get_cart() as $cart_item ) {
+            $pid = (int) $cart_item['product_id'];
+            $cart_map[$pid] = ($cart_map[$pid] ?? 0) + (int) $cart_item['quantity'];
+        }
+    }
+
+    wp_localize_script( 'cart-js', 'MYCART', array(
+        'ajax_url' => admin_url( 'admin-ajax.php' ),
+        'nonce'    => wp_create_nonce( 'my_cart_nonce' ),
+        'cart'     => $cart_map,
+    ));
+
+    wp_dequeue_style('wp-block-library');
+    wp_dequeue_style('wp-block-library-theme');
+    wp_dequeue_style('global-styles');
 }
 add_action( 'wp_enqueue_scripts', 'buffet_story_scripts' );
+
+
+
+add_action("admin_menu", "remove_menus");
+function remove_menus() {
+    remove_menu_page("edit.php");                 # Записи
+    remove_menu_page("edit-comments.php");        # Комментарии
+}
+
+// Добавить товар
+add_action('wp_ajax_my_cart_add', 'my_cart_add');
+add_action('wp_ajax_nopriv_my_cart_add', 'my_cart_add');
+function my_cart_add() {
+    check_ajax_referer('my_cart_nonce', 'nonce');
+    $product_id = absint($_POST['product_id'] ?? 0);
+    $qty = max(1, intval($_POST['qty'] ?? 1));
+    if (!$product_id) wp_send_json_error();
+    WC()->cart->add_to_cart($product_id, $qty);
+    wp_send_json_success([
+        'qty' => $qty,
+        'cart_count' => WC()->cart->get_cart_contents_count(),
+    ]);
+}
+
+// Изменить количество
+add_action('wp_ajax_my_cart_change', 'my_cart_change');
+add_action('wp_ajax_nopriv_my_cart_change', 'my_cart_change');
+function my_cart_change() {
+    check_ajax_referer('my_cart_nonce', 'nonce');
+    $product_id = absint($_POST['product_id'] ?? 0);
+    $delta = intval($_POST['delta'] ?? 0);
+    if (!$product_id || !$delta) wp_send_json_error();
+
+    foreach (WC()->cart->get_cart() as $key => $item) {
+        if ((int)$item['product_id'] === $product_id) {
+            $new = (int)$item['quantity'] + $delta;
+            if ($new <= 0) {
+                WC()->cart->remove_cart_item($key);
+                wp_send_json_success(['qty' => 0, 'cart_count' => WC()->cart->get_cart_contents_count()]);
+            } else {
+                WC()->cart->set_quantity($key, $new, true);
+                wp_send_json_success(['qty' => $new, 'cart_count' => WC()->cart->get_cart_contents_count()]);
+            }
+        }
+    }
+    wp_send_json_success(['qty' => 0, 'cart_count' => WC()->cart->get_cart_contents_count()]);
+}
