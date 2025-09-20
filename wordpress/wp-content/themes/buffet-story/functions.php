@@ -71,36 +71,61 @@ function buffet_story_content_width() {
 add_action( 'after_setup_theme', 'buffet_story_content_width', 0 );
 
 function buffet_story_scripts() {
-    wp_enqueue_style( 'buffet-story-style', get_stylesheet_uri(), array(), _S_VERSION );
-    wp_enqueue_style( 'main-css', get_stylesheet_directory_uri() . '/src/index.css' );
-    wp_enqueue_style( 'swiper-css', get_stylesheet_directory_uri() . '/src/css/vendor/swiper-bundle.min.css' );
+    // версия темы (если _S_VERSION не задан)
+    $ver = defined('_S_VERSION') ? _S_VERSION : wp_get_theme()->get('Version');
+
+    // CSS
+    wp_enqueue_style( 'buffet-story-style', get_stylesheet_uri(), [], $ver );
+    wp_enqueue_style( 'main-css', get_stylesheet_directory_uri() . '/src/index.css', [], filemtime( get_stylesheet_directory() . '/src/index.css' ) );
+    wp_enqueue_style( 'swiper-css', get_stylesheet_directory_uri() . '/src/css/vendor/swiper-bundle.min.css', [], null );
+    wp_enqueue_style('air-datepicker', get_stylesheet_directory_uri() . '/src/css/vendor/air-datepicker.css', [], '3.4.0');
+
+    // JS
+    wp_enqueue_script('air-datepicker', get_stylesheet_directory_uri() . '/src/js/vendor/air-datepicker.js', [], '3.4.0', true);
+    wp_enqueue_script( 'swiper-js', get_stylesheet_directory_uri() . '/src/js/vendor/swiper-bundle.min.js', [], null, true );
+    wp_enqueue_script( 'main-js',   get_stylesheet_directory_uri() . '/src/index.js', [ 'swiper-js' ], null, true );
+    wp_enqueue_script( 'cart-js',   get_stylesheet_directory_uri() . '/src/cart.js', [], null, true );
 
 
-    wp_enqueue_script( 'swiper-js',  get_stylesheet_directory_uri() . '/src/js/vendor/swiper-bundle.min.js', array(), null, true );
-    wp_enqueue_script( 'main-js',  get_stylesheet_directory_uri() . '/src/index.js', array(), null, true );
-    wp_enqueue_script( 'cart-js',  get_stylesheet_directory_uri() . '/src/cart.js', array(), null, true );
-
-    $cart_map = array();
+    // Состояние корзины -> MYCART
+    $cart_map = [];
     if ( function_exists('WC') && WC()->cart ) {
         foreach ( WC()->cart->get_cart() as $cart_item ) {
             $pid = (int) $cart_item['product_id'];
-            $cart_map[$pid] = ($cart_map[$pid] ?? 0) + (int) $cart_item['quantity'];
+            $cart_map[ $pid ] = ($cart_map[ $pid ] ?? 0) + (int) $cart_item['quantity'];
         }
     }
 
-    wp_localize_script( 'cart-js', 'MYCART', array(
+    wp_localize_script( 'cart-js', 'MYCART', [
         'ajax_url' => admin_url( 'admin-ajax.php' ),
         'nonce'    => wp_create_nonce( 'my_cart_nonce' ),
         'cart'     => $cart_map,
-    ));
+    ]);
 
-    wp_dequeue_style('wp-block-library');
-    wp_dequeue_style('wp-block-library-theme');
-    wp_dequeue_style('global-styles');
+    // Каталог — фильтр
+    wp_enqueue_script(
+        'catalog-filter',
+        get_stylesheet_directory_uri() . '/src/js/ajax-products.js',
+        [],
+        null,
+        true
+    );
+
+    wp_localize_script( 'catalog-filter', 'CATFILTER', [
+        'ajax_url' => admin_url( 'admin-ajax.php' ),      // <-- ЭТО НУЖНО
+        'nonce'    => wp_create_nonce( 'catalog_filter_nonce' ),
+    ]);
+
+    // Отключаем гутенберг-стили на фронте, чтобы не задеть админку
+    if ( ! is_admin() ) {
+        wp_dequeue_style('wp-block-library');
+        wp_dequeue_style('wp-block-library-theme');
+        wp_dequeue_style('global-styles');
+    }
 }
 add_action( 'wp_enqueue_scripts', 'buffet_story_scripts' );
 
-
+require_once get_template_directory() . '/ajax-products.php';
 
 add_action("admin_menu", "remove_menus");
 function remove_menus() {
@@ -146,3 +171,5 @@ function my_cart_change() {
     }
     wp_send_json_success(['qty' => 0, 'cart_count' => WC()->cart->get_cart_contents_count()]);
 }
+
+add_filter('wpcf7_autop_or_not', '__return_false');
