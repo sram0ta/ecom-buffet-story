@@ -71,17 +71,16 @@ function buffet_story_content_width() {
 add_action( 'after_setup_theme', 'buffet_story_content_width', 0 );
 
 function buffet_story_scripts() {
-    // версия темы (если _S_VERSION не задан)
     $ver = defined('_S_VERSION') ? _S_VERSION : wp_get_theme()->get('Version');
 
-    // CSS
     wp_enqueue_style( 'buffet-story-style', get_stylesheet_uri(), [], $ver );
     wp_enqueue_style( 'main-css', get_stylesheet_directory_uri() . '/src/index.css', [], filemtime( get_stylesheet_directory() . '/src/index.css' ) );
     wp_enqueue_style( 'swiper-css', get_stylesheet_directory_uri() . '/src/css/vendor/swiper-bundle.min.css', [], null );
-    wp_enqueue_style('air-datepicker', get_stylesheet_directory_uri() . '/src/css/vendor/air-datepicker.css', [], '3.4.0');
+    wp_enqueue_style('air-datepicker-css', get_stylesheet_directory_uri() . '/src/css/vendor/air-datepicker.css', [], '3.4.0');
+    wp_enqueue_style('choices-css', get_stylesheet_directory_uri() . '/src/css/vendor/choices.min.css', [], null);
 
-    // JS
-    wp_enqueue_script('air-datepicker', get_stylesheet_directory_uri() . '/src/js/vendor/air-datepicker.js', [], '3.4.0', true);
+    wp_enqueue_script('air-datepicker-js', get_stylesheet_directory_uri() . '/src/js/vendor/air-datepicker.js', [], '3.4.0', true);
+    wp_enqueue_script('choices-js', get_stylesheet_directory_uri() . '/src/js/vendor/choices.min.js', [], null, true);
     wp_enqueue_script( 'swiper-js', get_stylesheet_directory_uri() . '/src/js/vendor/swiper-bundle.min.js', [], null, true );
     wp_enqueue_script( 'main-js',   get_stylesheet_directory_uri() . '/src/index.js', [ 'swiper-js' ], null, true );
     wp_enqueue_script( 'cart-js',   get_stylesheet_directory_uri() . '/src/cart.js', [], null, true );

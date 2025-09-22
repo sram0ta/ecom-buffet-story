@@ -4,6 +4,7 @@ window.addEventListener('DOMContentLoaded', function() {
     catalogCategoryToggle();
     reviewsToggle();
     initAirPickers();
+    eventSelect();
 });
 
 document.addEventListener('wpcf7mailsent', initAirPickers);
@@ -119,3 +120,9 @@ function initAirPickers() {
     });
 }
 
+const eventSelect = () => {
+    new Choices('.select-event', {
+        searchEnabled: false, // убираем поиск (для простоты)
+        itemSelectText: '',   // убираем текст "Press to select"
+    });
+}

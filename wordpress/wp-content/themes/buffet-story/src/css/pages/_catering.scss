@@ -1,0 +1,121 @@
+.page-catering{
+
+  .stages{
+    display: flex;
+    flex-direction: column;
+    gap: 2.4rem 0;
+
+    &__title{
+      font-family: Anticva;
+      font-weight: 400;
+      font-size: 1.6rem;
+      line-height: 100%;
+      text-align: center;
+      text-transform: uppercase;
+      color: #000000;
+    }
+
+    &__list{
+      display: flex;
+      gap: 0 .9rem;
+    }
+
+    &__item{
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      gap: 2.35rem 0;
+      justify-content: space-between;
+      width: 12.7rem;
+      min-height: 12.65rem;
+      height: auto;
+      padding: 1.2rem .8rem 1.2rem 1.2rem;
+      border-radius: .8rem;
+      background-color: #EAEAEA;
+
+      &:not(:last-child)::before{
+        content: '';
+        position: absolute;
+        top: 50%;
+        right: 0;
+        transform: translate(100%, -50%);
+        background-image: url("/wp-content/uploads/2025/09/vector-2.svg");
+        background-repeat: no-repeat;
+        background-position: center;
+        background-size: cover;
+        width: .9rem;
+        height: .3rem;
+      }
+
+      &__icon{
+        width: 3rem;
+        height: 3rem;
+        object-fit: cover;
+        object-position: center;
+      }
+
+      &__inner{
+        display: flex;
+        flex-direction: column;
+        gap: .4rem 0;
+      }
+
+      &__title{
+        font-family: Manrope;
+        font-weight: 600;
+        font-size: .9rem;
+        line-height: 150%;
+        color: #000000;
+      }
+
+      &__description{
+        font-family: Manrope;
+        font-weight: 300;
+        font-size: .8rem;
+        line-height: 130%;
+        color: #000000;
+      }
+    }
+  }
+
+  .gallery{
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem 1.2rem;
+
+    &__two{
+
+      &__image{
+        grid-column: span 6;
+        width: 100%;
+        height: 22.3rem;
+        border-radius: 1.2rem;
+        object-fit: cover;
+        object-position: center;
+      }
+    }
+
+    &__three{
+
+      &__image{
+        width: 100%;
+        height: 22.3rem;
+        border-radius: 1.2rem;
+        object-fit: cover;
+        object-position: center;
+
+        &:nth-child(1){
+          grid-column: span 3;
+        }
+
+        &:nth-child(2){
+          grid-column: span 3;
+        }
+
+        &:nth-child(3){
+          grid-column: span 6;
+        }
+      }
+    }
+  }
+}

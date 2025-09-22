@@ -224,7 +224,7 @@ get_header();
             <div class="swiper" id="reviews-gallery">
                 <div class="swiper-wrapper">
                     <?php
-                        $images = get_field('reviews_gallery');
+                        $images = get_field('reviews_gallery', 10);
 
                         foreach ($images as $image) {
                             ?>

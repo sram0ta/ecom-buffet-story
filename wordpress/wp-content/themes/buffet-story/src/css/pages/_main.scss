@@ -21,6 +21,7 @@
     background-repeat: no-repeat;
 
     &__title{
+      max-width: 45.5rem;
       font-family: Anticva;
       font-weight: 400;
       font-size: 1.6rem;
@@ -239,11 +240,21 @@
       color: #000000;
     }
 
-    .select-event{
-      padding: .75rem .8rem;
+    .choices{
+
+      &.is-open{
+
+        .choices__inner{
+          border-radius: 30px 30px 0 0;
+        }
+      }
+    }
+
+    .select-event, .choices__inner{
+      padding: .75rem .8rem !important;
       width: 100%;
       height: 2.4rem;
-      border-radius: 100px;
+      border-radius: 100px !important;
       border: none;
       background-color: #FFFFFF;
       font-family: Manrope;
@@ -251,6 +262,9 @@
       font-size: .7rem;
       line-height: 130%;
 
+      .choices__list{
+        padding: 0 !important;
+      }
     }
   }
 }
@@ -695,6 +709,12 @@
       line-height: 100%;
       background-color: #F07D2C;
       color: #FFFFFF;
+      transition: .5s;
+
+      &:hover{
+        background-color: #3D4A36;
+        color: #FFFFFF;
+      }
     }
   }
 
