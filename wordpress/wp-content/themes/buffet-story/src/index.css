@@ -1246,6 +1246,128 @@ body {
   grid-column: span 6;
 }
 
+.page-about .about__title {
+  margin-bottom: 1.2rem;
+  font-family: Anticva;
+  font-weight: 400;
+  font-size: 1.6rem;
+  line-height: 100%;
+  text-align: center;
+  text-transform: uppercase;
+  color: #000000;
+}
+.page-about .about__description {
+  font-family: Manrope;
+  font-weight: 400;
+  font-size: 0.8rem;
+  line-height: 130%;
+  text-align: center;
+  color: #000000;
+}
+.page-about .about__list {
+  margin-top: 2.4rem;
+  height: 10rem;
+}
+.page-about .about__number {
+  grid-column: span 2;
+  border-radius: 0.8rem;
+  background-color: #3D4A36;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 0.25rem 0;
+}
+.page-about .about__number__count {
+  position: relative;
+  font-family: Manrope;
+  font-weight: 700;
+  font-size: 3.2rem;
+  line-height: 150%;
+  color: #FFFFFF;
+}
+.page-about .about__number__count::after {
+  content: "+";
+  position: absolute;
+  top: -0.1rem;
+  right: -0.4rem;
+  font-family: Manrope;
+  font-weight: 400;
+  font-size: 1.2rem;
+  line-height: 150%;
+  color: #FFFFFF;
+}
+.page-about .about__number__description {
+  font-family: Manrope;
+  font-weight: 700;
+  font-size: 0.8rem;
+  line-height: 150%;
+  color: #FFFFFF;
+}
+.page-about .about__information {
+  grid-column: span 6;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #F07D2C;
+  border-radius: 0.8rem;
+}
+.page-about .about__information__description {
+  max-width: 23.5rem;
+  font-family: Anticva;
+  font-weight: 400;
+  font-size: 1rem;
+  line-height: 100%;
+  text-align: center;
+  color: #FFFFFF;
+}
+.page-about .profitable {
+  display: flex;
+  flex-direction: column;
+  gap: 2.4rem 0;
+}
+.page-about .profitable__title {
+  font-family: Anticva;
+  font-weight: 400;
+  font-size: 1.6rem;
+  line-height: 100%;
+  text-align: center;
+  text-transform: uppercase;
+  color: #000000;
+}
+.page-about .profitable__list {
+  gap: 1.2rem 1.2rem;
+}
+.page-about .profitable__item {
+  grid-column: span 4;
+  padding: 1.2rem;
+  border-radius: 0.8rem;
+  background-color: #EFEFEF;
+  height: 100%;
+}
+.page-about .profitable__item__image {
+  margin-bottom: 0.8rem;
+  width: 2.2rem;
+  height: 2.2rem;
+  object-fit: cover;
+  object-position: center;
+}
+.page-about .profitable__item__title {
+  margin-bottom: 0.4rem;
+  font-family: Manrope;
+  font-weight: 600;
+  font-size: 1.2rem;
+  line-height: 130%;
+  color: #000000;
+}
+.page-about .profitable__item__description {
+  font-family: Manrope;
+  font-weight: 300;
+  font-size: 0.8rem;
+  line-height: 130%;
+  color: #000000;
+}
+
 .footer {
   margin-top: 1.2rem;
   margin-bottom: 1.2rem;
