@@ -5,10 +5,19 @@ window.addEventListener('DOMContentLoaded', function() {
     reviewsToggle();
     initAirPickers();
     eventSelect();
+    productGallery();
+    productTab();
+    formCheck();
 });
 
 document.addEventListener('wpcf7mailsent', initAirPickers);
 document.addEventListener('wpcf7invalid', initAirPickers);
+
+class DomUtils {
+    static remToPx(rem) {
+        return parseFloat(getComputedStyle(document.documentElement).fontSize) * rem;
+    }
+}
 
 const galleryReviews = () => {
     if (document.querySelector('#reviews-gallery')) {
@@ -121,8 +130,292 @@ function initAirPickers() {
 }
 
 const eventSelect = () => {
-    new Choices('.select-event', {
-        searchEnabled: false, // убираем поиск (для простоты)
-        itemSelectText: '',   // убираем текст "Press to select"
-    });
+    if (document.querySelector('.select-event')) {
+        new Choices('.select-event', {
+            searchEnabled: false,
+            itemSelectText: '',
+        });
+    }
 }
+
+
+
+const productGallery = () => {
+    if (document.querySelector('.product__information__gallery__thumbs')) {
+
+        const thumbs = new Swiper('.product__information__gallery__thumbs .swiper', {
+            direction: 'vertical',
+            slidesPerView: 2,
+            spaceBetween: DomUtils.remToPx(1.2),
+            watchSlidesProgress: true,
+        });
+
+        const main = new Swiper('.product__information__gallery__main .swiper', {
+            slidesPerView: 1,
+            effect: 'fade',
+            thumbs: { swiper: thumbs },
+            navigation: {
+                nextEl: '.product__information__gallery ._next',
+                prevEl: '.product__information__gallery ._prev',
+            },
+        });
+    }
+};
+
+const productTab = () => {
+    if (document.querySelector('.tabs__item')) {
+        const tabs = document.querySelectorAll('.tabs__item');
+        const contents = document.querySelectorAll('.tabs__content');
+
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                const target = tab.dataset.tab;
+
+                tabs.forEach(t => t.classList.remove('active'));
+                contents.forEach(c => c.classList.remove('active'));
+
+                tab.classList.add('active');
+                const content = document.querySelector(`.tabs__content[data-content="${target}"]`);
+                if (content) content.classList.add('active');
+            });
+        });
+    }
+}
+
+const formCheck = () => {
+    const form = document.querySelector('.wpcf7 form');
+    if (!form) return;
+
+    const toggleBtn = form.querySelector('.form__check');
+    const hiddenCheckbox = form.querySelector('.form__check_hide input[type="checkbox"]');
+    const submitBtn = form.querySelector('.form__button');
+
+    if (toggleBtn && hiddenCheckbox) {
+        toggleBtn.addEventListener('click', () => {
+            hiddenCheckbox.checked = !hiddenCheckbox.checked;
+            toggleBtn.classList.toggle('active', hiddenCheckbox.checked);
+            toggleBtn.classList.remove('error');
+        });
+    }
+
+    if (submitBtn && hiddenCheckbox && toggleBtn) {
+        submitBtn.addEventListener('click', (e) => {
+            if (!hiddenCheckbox.checked) {
+                toggleBtn.classList.add('error');
+            }
+        });
+    }
+}
+
+class CatalogFilter {
+    constructor(listSelector = '.catalog__list') {
+        this.list = document.querySelector(listSelector);
+        if (!this.list) return;
+
+        this.slugToId = new Map();
+        this.bindEvents();
+        this.initFromURL();
+    }
+
+    qsa(sel){ return Array.from(document.querySelectorAll(sel)); }
+    qs(sel){ return document.querySelector(sel); }
+
+    clearActives() {
+        this.qsa(
+            '.catalog__category__button.active, ' +
+            '.catalog__filters__individual.active, ' +
+            '.catalog__filters__category__item.active'
+        ).forEach(el => el.classList.remove('active'));
+    }
+
+    getParentBtn(childBtn) {
+        const pid = childBtn?.dataset?.parentId;
+        if (pid) {
+            const parentBtn = this.qs(`.catalog__category__button[data-category-id="${pid}"]`);
+            if (parentBtn) return parentBtn;
+        }
+        const holder = childBtn?.closest('.catalog__filters__category[data-category]');
+        if (holder) {
+            const pid2 = holder.getAttribute('data-category');
+            if (pid2) {
+                const parentBtn = this.qs(`.catalog__category__button[data-category-id="${pid2}"]`);
+                if (parentBtn) return parentBtn;
+            }
+        }
+        return null;
+    }
+
+    applyActive(btn, alsoParent = false) {
+        this.clearActives();
+        if (btn) {
+            btn.classList.add('active');
+            if (alsoParent) {
+                const parentBtn = this.getParentBtn(btn);
+                if (parentBtn) parentBtn.classList.add('active');
+            }
+        }
+    }
+
+    setLoading(on) {
+        if (on) {
+            const prevHeight = this.list.offsetHeight;
+            this.list.style.minHeight = prevHeight + 'px';
+            this.list.classList.add('is-loading');
+            this.list.innerHTML = '<div class="catalog__loading">Загрузка…</div>';
+        } else {
+            this.list.classList.remove('is-loading');
+            this.list.style.minHeight = '';
+        }
+    }
+
+    getTermFromURL() {
+        const url = new URL(window.location.href);
+        const qp  = url.searchParams.get('product_cat');
+        if (qp) return qp;
+
+        const parts = window.location.pathname.split('/').filter(Boolean);
+        if (!parts.length) return null;
+
+        const bases = new Set(['product-category', 'catalog']);
+        for (let i = 0; i < parts.length; i++) {
+            if (bases.has(parts[i])) {
+                const tail = parts.slice(i + 1).filter(Boolean);
+                if (tail.length) return tail[tail.length - 1];
+                return null;
+            }
+        }
+        const last = parts[parts.length - 1];
+        if (!['product-category', 'catalog'].includes(last)) return last;
+        return null;
+    }
+
+    pushCategoryURL(slug, urlOverride = null) {
+        if (slug) {
+            const finalUrl = urlOverride || (() => {
+                const u = new URL(window.location.href);
+                u.searchParams.set('product_cat', slug);
+                return u.toString();
+            })();
+            history.pushState({ product_cat: slug }, '', finalUrl);
+            return;
+        }
+
+        if (window.CATFILTER?.base_url) {
+            history.pushState({ product_cat: null }, '', CATFILTER.base_url);
+            return;
+        }
+
+        const u = new URL(window.location.href);
+        u.searchParams.delete('product_cat');
+        history.pushState({ product_cat: null }, '', u.toString());
+    }
+
+    async fetchProductsByTermId(termId) {
+        const fd = new FormData();
+        fd.append('action', 'buffet_filter_products');
+        fd.append('nonce',  CATFILTER.nonce);
+        fd.append('term_id', termId);
+
+        const res  = await fetch(CATFILTER.ajax_url, { method: 'POST', body: fd });
+        const data = await res.json();
+        if (data?.success) {
+            this.list.innerHTML = data.data.html || '<div class="catalog__empty">Товары не найдены</div>';
+        } else {
+            this.list.innerHTML = '<div class="catalog__empty">Ошибка загрузки</div>';
+        }
+    }
+
+    async initFromURL() {
+        const slug = this.getTermFromURL();
+
+        if (!slug) {
+            this.clearActives();
+            return;
+        }
+
+        const btn = this.qs(
+            `.catalog__category__button[data-category-slug="${slug}"],
+       .catalog__filters__individual[data-category-slug="${slug}"],
+       .catalog__filters__category__item[data-category-slug="${slug}"]`
+        );
+
+        let termId = 0;
+        if (btn) {
+            const alsoParent =
+                btn.classList.contains('catalog__filters__individual') ||
+                btn.classList.contains('catalog__filters__category__item');
+            this.applyActive(btn, alsoParent);
+            termId = parseInt(btn.dataset.categoryId || '0', 10) || 0;
+        } else if (this.slugToId.has(slug)) {
+            termId = this.slugToId.get(slug);
+        }
+
+        if (termId > 0) {
+            this.setLoading(true);
+            try {
+                await this.fetchProductsByTermId(termId);
+            } finally {
+                this.setLoading(false);
+                if (typeof applyCartStateToUI === 'function') applyCartStateToUI();
+            }
+        }
+    }
+
+    bindEvents() {
+        document.addEventListener('click', (e) => this.onClick(e));
+        window.addEventListener('popstate', () => this.initFromURL());
+    }
+
+    async onClick(e) {
+        const btn =
+            e.target.closest('.catalog__category__button') ||
+            e.target.closest('.catalog__filters__individual') ||
+            e.target.closest('.catalog__filters__category__item');
+
+        if (!btn) return;
+
+        if (btn.tagName === 'A') e.preventDefault();
+
+        const termId = parseInt(btn.dataset.categoryId || '0', 10) || 0;
+        const slug   = btn.dataset.categorySlug || '';
+        const url    = btn.dataset.url || btn.getAttribute('href') || null;
+
+        const isCategoryBtn = btn.classList.contains('catalog__category__button');
+        const isIndividual  = btn.classList.contains('catalog__filters__individual');
+        const isChild       = btn.classList.contains('catalog__filters__category__item');
+
+        if (btn.classList.contains('active')) {
+            this.clearActives();
+            btn.blur();
+            this.setLoading(true);
+            try {
+                await this.fetchProductsByTermId(0);
+                this.pushCategoryURL(null);
+            } finally {
+                this.setLoading(false);
+                if (typeof applyCartStateToUI === 'function') applyCartStateToUI();
+            }
+            return;
+        }
+
+        const alsoParent = isIndividual || isChild;
+        this.applyActive(btn, alsoParent);
+
+        if (slug && termId) this.slugToId.set(slug, termId);
+
+        this.setLoading(true);
+        try {
+            await this.fetchProductsByTermId(termId);
+            if (slug) this.pushCategoryURL(slug, url);
+            else this.pushCategoryURL(null);
+        } finally {
+            this.setLoading(false);
+            if (typeof applyCartStateToUI === 'function') applyCartStateToUI();
+        }
+    }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    new CatalogFilter();
+});
+

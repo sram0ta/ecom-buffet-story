@@ -89,7 +89,7 @@ get_header();
                 while ($loop->have_posts()) : $loop->the_post();
                     global $product;
                     ?>
-                    <div class="product-item" data-product-id="<?php echo esc_attr($product->get_id()); ?>">
+                    <div class="product-item">
                         <img src="<?php the_post_thumbnail_url(); ?>" alt="" class="product-item__image">
                         <div class="product-item__content">
                             <div class="product-item__content__inner">
@@ -99,7 +99,7 @@ get_header();
                             <p class="product-item__content__description"><?php the_field('boxing_composition'); ?></p>
                             <div class="product-item__content__price"><?= $product->get_price_html(); ?></div>
                             <div class="product-item__content__buttons">
-                                <div class="product-item__content__buttons__inner">
+                                <div class="product-item__content__buttons__inner" data-product-id="<?php echo esc_attr($product->get_id()); ?>">
                                     <button class="product-item__content__buttons__add">В корзину</button>
                                     <div class="product-item__content__buttons__wrapper">
                                         <button class="product-item__content__buttons__count-value">-</button>

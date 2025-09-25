@@ -17,12 +17,12 @@ get_header();
                 'orderby'    => 'name',
                 'order'      => 'ASC',
             ]);
-            foreach ($categories as $category) {
+
+            foreach ($categories as $category) :
+                $term_link = get_term_link($category);
                 ?>
-                <button class="catalog__category__button" data-category="<?= esc_html($category->term_id); ?>"><?= esc_html($category->name); ?></button>
-                <?php
-            }
-            ?>
+                <a href="<?php echo esc_url($term_link); ?>" class="catalog__category__button" data-category-id="<?php echo esc_attr($category->term_id); ?>" data-category-slug="<?php echo esc_attr($category->slug); ?>"><?php echo esc_html($category->name); ?></a>
+            <?php endforeach; ?>
         </div>
         <div class="catalog__inner grid-12">
             <div class="catalog__filters">
@@ -56,9 +56,15 @@ get_header();
                             }
 
                             if ( empty($children) ) : ?>
-                                <button class="catalog__filters__individual" data-category="<?= esc_attr($parent->term_id); ?>">
-                                    <?= esc_html($parent->name); ?>
+                                <button
+                                        class="catalog__filters__individual"
+                                        data-category-id="<?php echo esc_attr($parent->term_id); ?>"
+                                        data-category-slug="<?php echo esc_attr($parent->slug); ?>"
+                                        data-parent-id="<?php echo esc_attr($parent->term_id); ?>">
+                                >
+                                    <?php echo esc_html($parent->name); ?>
                                 </button>
+
                             <?php
                             else : ?>
                                 <div class="catalog__filters__category" data-category="<?php echo esc_attr($parent->term_id); ?>">
@@ -70,7 +76,10 @@ get_header();
                                     </div>
                                     <div class="catalog__filters__category__list">
                                         <?php foreach ($children as $child) : ?>
-                                            <button class="catalog__filters__category__item" data-category="<?php echo esc_attr($child->term_id); ?>">
+                                            <button  class="catalog__filters__category__item"
+                                                     data-category-id="<?php echo esc_attr($child->term_id); ?>"
+                                                     data-category-slug="<?php echo esc_attr($child->slug); ?>"
+                                                     data-parent-id="<?php echo esc_attr($parent->term_id); ?>">
                                                 <span class="catalog__filters__category__item__inner">
                                                     <span class="catalog__filters__category__item__icon" aria-hidden="true">
                                                         <svg width="16" height="11" viewBox="0 0 16 11" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -104,7 +113,7 @@ get_header();
                 while ($loop->have_posts()) : $loop->the_post();
                     global $product;
                     ?>
-                    <div class="product-item" data-product-id="<?php echo esc_attr($product->get_id()); ?>">
+                    <div class="product-item" >
                         <img src="<?php the_post_thumbnail_url(); ?>" alt="" class="product-item__image">
                         <div class="product-item__content">
                             <div class="product-item__content__inner">
@@ -114,7 +123,7 @@ get_header();
                             <p class="product-item__content__description"><?php the_field('boxing_composition'); ?></p>
                             <div class="product-item__content__price"><?= $product->get_price_html(); ?></div>
                             <div class="product-item__content__buttons">
-                                <div class="product-item__content__buttons__inner">
+                                <div class="product-item__content__buttons__inner" data-product-id="<?php echo esc_attr($product->get_id()); ?>">
                                     <button class="product-item__content__buttons__add">В корзину</button>
                                     <div class="product-item__content__buttons__wrapper">
                                         <button class="product-item__content__buttons__count-value">-</button>
@@ -136,53 +145,53 @@ get_header();
     <div class="menu container grid-12">
         <div class="menu__content">
             <div class="menu__content__inner">
-                <div class="menu__content__title"><?php the_field('menu_title'); ?></div>
-                <div class="menu__content__description"><?php the_field('menu_description'); ?></div>
+                <div class="menu__content__title"><?php the_field('menu_title', 110); ?></div>
+                <div class="menu__content__description"><?php the_field('menu_description', 110); ?></div>
             </div>
             <a href="#form" class="menu__content__button">Оставить заявку</a>
         </div>
         <?php
-            $gallery = get_field('menu_gallery');
+        $gallery = get_field('menu_gallery', 110);
 
-            foreach ($gallery as $image) {
-                ?>
-                    <img src="<?= $image['url']; ?>" alt="<?= $image['alt']; ?>" class="menu__image" loading="lazy">
-                <?php
-            }
+        foreach ($gallery as $image) {
+            ?>
+            <img src="<?= $image['url']; ?>" alt="<?= $image['alt']; ?>" class="menu__image" loading="lazy">
+            <?php
+        }
         ?>
     </div>
     <div class="questions container grid-12">
-        <div class="questions__title"><?php the_field('questions_title'); ?></div>
+        <div class="questions__title"><?php the_field('questions_title', 110); ?></div>
         <div class="questions__list">
             <?php
-                while ( have_rows('repeater_questions') ) : the_row();
+            while ( have_rows('repeater_questions', 110) ) : the_row();
                 ?>
-                    <div class="questions__item">
-                        <div class="questions__item__inner">
-                            <div class="questions__item__icon"></div>
-                            <div class="questions__item__title"><?php the_sub_field('title'); ?></div>
-                        </div>
-                        <svg class="questions__item__arrow" width="10" height="18" viewBox="0 0 10 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M1 1L9 9L1 17" stroke="#D1D7CE" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                        </svg>
+                <div class="questions__item">
+                    <div class="questions__item__inner">
+                        <div class="questions__item__icon"></div>
+                        <div class="questions__item__title"><?php the_sub_field('title'); ?></div>
                     </div>
-                <?php
-                endwhile;
+                    <svg class="questions__item__arrow" width="10" height="18" viewBox="0 0 10 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M1 1L9 9L1 17" stroke="#D1D7CE" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </div>
+            <?php
+            endwhile;
             ?>
         </div>
         <div class="questions__content">
             <?php
-                while ( have_rows('repeater_questions') ) : the_row();
+            while ( have_rows('repeater_questions', 110) ) : the_row();
                 ?>
-                    <div class="questions__content__item">
-                        <div class="questions__content__item__inner">
-                            <div class="questions__content__item__title"><?php the_sub_field('title'); ?></div>
-                            <div class="questions__content__item__description"><?php the_sub_field('description'); ?></div>
-                        </div>
-                        <img src="<?= get_sub_field('image')['url']; ?>" alt="<?= get_sub_field('image')['alt']; ?>" class="questions__content__item__image">
+                <div class="questions__content__item">
+                    <div class="questions__content__item__inner">
+                        <div class="questions__content__item__title"><?php the_sub_field('title'); ?></div>
+                        <div class="questions__content__item__description"><?php the_sub_field('description'); ?></div>
                     </div>
-                <?php
-                endwhile;
+                    <img src="<?= get_sub_field('image')['url']; ?>" alt="<?= get_sub_field('image')['alt']; ?>" class="questions__content__item__image">
+                </div>
+            <?php
+            endwhile;
             ?>
         </div>
     </div>

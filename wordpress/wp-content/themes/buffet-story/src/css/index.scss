@@ -55,11 +55,19 @@ html {
 body{
   background-color: #FFFFFF;
   scroll-behavior: smooth;
+
+  &.fixed{
+    overflow-y: hidden;
+  }
 }
 
 .container{
   position: relative;
   margin: 4.4rem 2.4rem 0 2.4rem;
+
+  &_first{
+    margin-top: 5.9rem;
+  }
 }
 
 .grid-12{
@@ -82,4 +90,5 @@ body{
 @import "pages/_catalog";
 @import "pages/_catering";
 @import "pages/_about";
+@import "pages/_product";
 @import "inc/_footer";

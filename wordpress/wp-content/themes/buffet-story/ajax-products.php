@@ -6,15 +6,10 @@
 
 if ( ! defined('ABSPATH') ) { exit; }
 
-// Опционально: загружаем только если активен WooCommerce
 if ( ! class_exists('WooCommerce') ) {
     return;
 }
 
-/**
- * Вспомогательная функция рендера карточки товара
- * (скопирована из прошлой версии)
- */
 function buffet_render_product_card( WC_Product $product ) {
     $post_id = $product->get_id();
     ob_start(); ?>
@@ -33,7 +28,7 @@ function buffet_render_product_card( WC_Product $product ) {
             </p>
             <div class="product-item__content__price"><?php echo wp_kses_post( $product->get_price_html() ); ?></div>
             <div class="product-item__content__buttons">
-                <div class="product-item__content__buttons__inner">
+                <div class="product-item__content__buttons__inner" data-product-id="<?php echo esc_attr($product->get_id()); ?>">
                     <button class="product-item__content__buttons__add">В корзину</button>
                     <div class="product-item__content__buttons__wrapper" style="display:none">
                         <button class="product-item__content__buttons__count-value">-</button>
@@ -49,10 +44,6 @@ function buffet_render_product_card( WC_Product $product ) {
     return ob_get_clean();
 }
 
-/**
- * Основной обработчик: buffet_filter_products
- * POST: term_id, per_page (опц)
- */
 function buffet_filter_products() {
     check_ajax_referer('catalog_filter_nonce', 'nonce');
 
