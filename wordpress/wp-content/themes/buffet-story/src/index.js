@@ -1,4 +1,8 @@
 window.addEventListener('DOMContentLoaded', function() {
+    openMenu();
+    advantagesGallery();
+    platformsGallery();
+    headerScroll();
     galleryBanner();
     galleryReviews();
     catalogCategoryToggle();
@@ -19,19 +23,96 @@ class DomUtils {
     }
 }
 
+const headerScroll = () => {
+    const header = document.getElementById('header');
+
+    window.addEventListener('scroll', () => {
+        if (window.scrollY > 0) {
+            header.classList.add('scroll');
+        } else {
+            header.classList.remove('scroll');
+        }
+    });
+}
+
+const openMenu = () => {
+    if (document.querySelector('.header__menu')) {
+        document.querySelector('.header__menu').addEventListener('click', () => {
+            document.querySelector('.header__menu').classList.toggle('active');
+            document.querySelector('.menu-navigation').classList.toggle('active');
+            document.querySelector('body').classList.toggle('fixed');
+        })
+    }
+}
+
+const advantagesGallery = () => {
+    if (window.innerWidth > 1024) return;
+
+    if (document.querySelector('#advantages-gallery')) {
+        const swiper = new Swiper("#advantages-gallery", {
+            slidesPerView: 2,
+            spaceBetween: DomUtils.remToPx(.4),
+            speed: 500,
+            loop: true,
+            navigation: {
+                prevEl: '.advantages ._prev',
+                nextEl: '.advantages ._next',
+            },
+            breakpoints: {
+                576: {
+                    slidesPerView: 2.5,
+                },
+            }
+        });
+    }
+}
+
+const platformsGallery = () => {
+    if (window.innerWidth > 1024) return;
+
+    if (document.querySelector('#platforms-gallery')) {
+        const swiper = new Swiper("#platforms-gallery", {
+            slidesPerView: 1,
+            spaceBetween: DomUtils.remToPx(.8),
+            speed: 500,
+            loop: true,
+            navigation: {
+                prevEl: '.platforms ._prev',
+                nextEl: '.platforms ._next',
+            },
+            breakpoints: {
+                576: {
+                    slidesPerView: 1.7,
+                },
+            }
+        });
+    }
+}
+
 const galleryReviews = () => {
     if (document.querySelector('#reviews-gallery')) {
         const swiper = new Swiper("#reviews-gallery", {
-            slidesPerView: 4,
+            slidesPerView: 1.2, // по умолчанию (мобильная версия)
+            spaceBetween: DomUtils.remToPx(.4),
             speed: 500,
             loop: true,
             navigation: {
                 prevEl: '.reviews__gallery ._prev',
                 nextEl: '.reviews__gallery ._next',
             },
+            breakpoints: {
+                576: {
+                    slidesPerView: 2.2,
+                    spaceBetween: DomUtils.remToPx(1.2),
+                },
+                1024: {
+                    slidesPerView: 4,
+                }
+            }
         });
     }
 }
+
 
 const galleryBanner = () => {
     if (document.querySelector('#banner-gallery')) {
@@ -418,4 +499,3 @@ class CatalogFilter {
 document.addEventListener('DOMContentLoaded', () => {
     new CatalogFilter();
 });
-

@@ -12,7 +12,6 @@
 ?>
 <div class="form container grid-12">
     <div class="form__inner">
-        <div class="form__item__inner"></div>
         <div class="form__title">Рассчитайте кейтеринг или доставку еды на лучших условиях прямо сейчас</div>
         <?= do_shortcode('[contact-form-7 id="6c4e621" title="Форма для заявки"]'); ?>
     </div>
@@ -90,13 +89,18 @@
             <?php endif; ?>
         </div>
         <div class="footer__social__links">
+            <?php
+            $phone_raw = get_field('footer_phone', 10);
+            $phone_tel = preg_replace('/[^\d\+]/', '', $phone_raw);
+            ?>
             <div class="footer__social__links__item">
                 <div class="footer__social__links__item__title">Контактный телефон</div>
-                <a href="<?php the_field('footer_phone', 10); ?>" class="footer__social__links__item__description"><?php the_field('footer_phone', 10); ?></a>
+                <a href="tel:<?= esc_attr($phone_tel); ?>" class="footer__social__links__item__description"><?= esc_html($phone_raw); ?></a>
             </div>
+
             <div class="footer__social__links__item">
                 <div class="footer__social__links__item__title">Электронная почта</div>
-                <a href="<?php the_field('footer_mail', 10); ?>" class="footer__social__links__item__description"><?php the_field('footer_mail', 10); ?></a>
+                <a href="mailto:<?php the_field('footer_mail', 10); ?>" class="footer__social__links__item__description"><?php the_field('footer_mail', 10); ?></a>
             </div>
         </div>
     </div>

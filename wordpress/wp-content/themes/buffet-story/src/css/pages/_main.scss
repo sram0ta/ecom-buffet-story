@@ -1,8 +1,15 @@
 .hero{
-  margin-top: 1.6rem;
   height: 17.4rem;
   overflow: hidden;
   border-radius: .8rem;
+
+  @include tablet{
+    height: 12.3rem;
+  }
+
+  @include mobile{
+    height: 15.2rem;
+  }
 
   .swiper{
     width: 100%;
@@ -20,6 +27,10 @@
     background-position: center;
     background-repeat: no-repeat;
 
+    @include tablet{
+      padding: 1.2rem 1.2rem 2.8rem 1.2rem;
+    }
+
     &__title{
       max-width: 45.5rem;
       font-family: Anticva;
@@ -27,12 +38,22 @@
       font-size: 1.6rem;
       line-height: 150%;
       color: #FFFFFF;
+
+      @include tablet{
+        font-size: 1rem;
+        max-width: 23.4rem;
+      }
     }
 
     &__buttons{
       display: flex;
       align-items: center;
       gap: 0 1.2rem;
+
+      @include mobile{
+        flex-direction: column;
+        gap: .4rem 0;
+      }
 
       &__item{
         padding: 0 1.2rem;
@@ -46,6 +67,16 @@
         font-size: .8rem;
         line-height: 100%;
         transition: .5s;
+
+        @include tablet{
+          padding: 0 .8rem;
+          height: 1.8rem;
+          font-size: .7rem;
+        }
+
+        @include mobile{
+          width: 100%;
+        }
 
         &._green{
           background-color: #3D4A36;
@@ -96,6 +127,13 @@
     }
   }
 }
+.main{
+
+  @include tablet{
+    overflow-x: hidden;
+  }
+}
+
 
 .page-home{
 
@@ -107,6 +145,36 @@
       font-size: 1.6rem;
       line-height: 150%;
       max-width: 95%;
+
+      @include tablet{
+        font-size: 1rem;
+      }
+
+      @include mobile{
+        font-size: .8rem;
+      }
+    }
+
+    &__inner{
+      display: flex;
+      align-items: flex-start;
+      gap: 0 2.8rem;
+
+      @media (min-width: 1024px) {
+
+        .advantages__navigation{
+          display: none;
+        }
+      }
+
+      @include mobile{
+        flex-direction: column;
+        gap: 1.2rem 0;
+      }
+
+      .advantages__navigation{
+        align-self: end;
+      }
     }
 
     &__list{
@@ -115,6 +183,26 @@
       align-items: center;
       justify-content: space-between;
       gap: 0 1rem;
+
+      @include mobile{
+        margin-top: 1.2rem;
+      }
+
+      .swiper{
+        width: 100%;
+        overflow: initial;
+
+        @media (min-width: 1024px) {
+
+          &-wrapper{
+            justify-content: space-between;
+          }
+
+          &-slide{
+            width: fit-content;
+          }
+        }
+      }
     }
 
     &__item{
@@ -123,11 +211,20 @@
       flex-direction: column;
       gap: 1.2rem 0;
 
+      @include mobile{
+        width: 8rem;
+        gap: .4rem 0;
+      }
+
       &__image{
         width: 100%;
         height: 12.65rem;
         object-fit: cover;
         object-position: center;
+
+        @include mobile{
+          height: 8rem;
+        }
       }
 
       &__title{
@@ -136,6 +233,10 @@
         font-size: 1rem;
         line-height: 130%;
         color: #000000;
+
+        @include tablet{
+          font-size: .8rem;
+        }
       }
     }
   }
@@ -152,6 +253,19 @@
     display: flex;
     flex-direction: column;
     gap: 1.2rem 0;
+
+    @include tablet{
+      grid-column: 1 / -1;
+      padding: 2.4rem 3.05rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.2rem 0;
+    }
+
+    @include mobile{
+      padding: 1.2rem;
+    }
   }
 
   .wpcf7-form{
@@ -164,9 +278,13 @@
     grid-column: 7 / -1;
     border-radius: .8rem;
     width: 33rem;
-    height: 29.35rem;
+    height: 100%;
     object-fit: cover;
     object-position: center;
+
+    @include tablet{
+      display: none;
+    }
   }
 
   &__map{
@@ -174,6 +292,10 @@
     height: calc(100% + 1px);
     border-radius: .8rem;
     overflow: hidden;
+
+    @include tablet{
+      display: none;
+    }
 
     iframe{
       width: 100%;
@@ -187,12 +309,29 @@
     font-size: 1.2rem;
     line-height: 130%;
     color: #FFFFFF;
+
+    @include tablet{
+      max-width: 90%;
+      text-align: center;
+      font-size: 1rem;
+    }
+
+    @include mobile{
+      max-width: 100%;
+      font-size: .8rem;
+    }
   }
 
   &__list{
     display: flex;
     align-items: center;
     gap: 0 1rem;
+
+    @include mobile{
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 1.2rem 0;
+    }
   }
 
   &__item{
@@ -200,6 +339,10 @@
     flex-direction: column;
     gap: .4rem 0;
     flex: 1;
+
+    @include mobile{
+      width: 100%;
+    }
 
     &__inner{
       position: relative;
@@ -220,6 +363,10 @@
       font-size: .8rem;
       line-height: 130%;
       color: #FFFFFF;
+
+      @include mobile{
+        font-size: .7rem;
+      }
     }
 
     &__input{
@@ -266,7 +413,7 @@
       &.is-open{
 
         .choices__inner{
-          border-radius: 30px 30px 0 0;
+          border-radius: 1.5rem 1.5rem 0 0;
         }
       }
     }
@@ -296,6 +443,10 @@
     border: none;
     padding: 0;
 
+    @include mobile{
+      gap: 0 .4rem;
+    }
+
     &.error{
 
       .form__check__title{
@@ -317,6 +468,7 @@
     &__icon{
       width: 1rem;
       height: 1rem;
+      flex-shrink: 0;
 
       path{
         opacity: 0;
@@ -332,6 +484,11 @@
       line-height: 130%;
       color: #FFFFFF;
       text-align: left;
+
+      @include mobile{
+        max-width: 100%;
+        font-size: .6rem;
+      }
     }
   }
 
@@ -348,6 +505,11 @@
     line-height: 100%;
     color: #FFFFFF;
     transition: .5s;
+
+    @include mobile{
+      height: 1.8rem;
+      font-size: .7rem;
+    }
 
     &:hover{
       opacity: .5;
@@ -375,6 +537,15 @@
   margin-top: 4.4rem;
   padding: 3.2rem 2.4rem 1.2rem 2.4rem;
 
+  @include tablet{
+    margin-top: 2.4rem;
+    padding: 2.4rem 1.2rem;
+  }
+
+  @include mobile{
+    padding: 1.2rem .8rem;
+  }
+
   &__title{
     margin-bottom: 2.4rem;
     font-family: Anticva;
@@ -384,31 +555,107 @@
     text-align: center;
     text-transform: uppercase;
     color: #FFFFFF;
+
+    @include tablet{
+      font-size: 1rem;
+    }
+
+    @include mobile{
+      margin-bottom: 1.2rem;
+    }
+  }
+
+  &__list{
+
+    @include tablet{
+      gap: 1.2rem 1.2rem;
+    }
+
+    @include mobile{
+      gap: .4rem .4rem;
+    }
   }
 }
 
 .product-item{
   grid-column: span 3;
-  border-radius: 16px;
+  position: relative;
+  border-radius: .8rem;
   background-color: #FFFFFF;
   overflow: hidden;
+
+  @include tablet{
+    grid-column: span 6;
+  }
+
+  @include mobile{
+    grid-column: span 2;
+  }
+
+  &__tag{
+    position: absolute;
+    top: .8rem;
+    right: .8rem;
+    width: fit-content;
+    display: flex;
+    align-items: center;
+    gap: .2rem;
+    padding: .05rem .2rem .05rem .05rem;
+    background-color: #F07D2C;
+    border-radius: 100px;
+
+    @include mobile{
+      top: .4rem;
+      right: .4rem;
+    }
+
+    &__icon{
+      width: 1rem;
+      height: 1rem;
+    }
+
+    &__title{
+      font-family: Manrope;
+      font-weight: 400;
+      font-size: .6rem;
+      line-height: 150%;
+      color: #FFFFFF;
+      text-transform: uppercase;
+
+      @include mobile{
+        font-size: .4rem;
+      }
+    }
+  }
 
   &__image{
     width: 100%;
     height: 12.4rem;
     object-fit: cover;
     object-position: center;
-    border-radius: 16px;
+    border-radius: .8rem;
+
+    @include mobile{
+      height: 8rem;
+    }
   }
 
   &__content{
     padding: .8rem;
+
+    @include mobile{
+      padding: .4rem;
+    }
 
     &__inner{
       display: flex;
       align-items: flex-start;
       justify-content: space-between;
       margin-bottom: .4rem;
+
+      @include mobile{
+        margin-bottom: .8rem;
+      }
     }
 
     &__title{
@@ -418,6 +665,10 @@
       font-size: 1rem;
       line-height: 130%;
       color: #000000;
+
+      @include mobile{
+        font-size: .8rem;
+      }
     }
 
     &__weight{
@@ -426,6 +677,10 @@
       font-size: .8rem;
       line-height: 130%;
       color: #000000;
+
+      @include mobile{
+        display: none;
+      }
     }
 
     &__description{
@@ -439,6 +694,10 @@
       -webkit-box-orient: vertical;
       overflow: hidden;
       text-overflow: ellipsis;
+
+      @include mobile{
+        display: none;
+      }
     }
 
     &__price{
@@ -448,6 +707,11 @@
       font-size: 1.2rem;
       line-height: 130%;
       color: #000000;
+
+      @include mobile{
+        margin-bottom: .4rem;
+        font-size: 1rem;
+      }
     }
 
     &__buttons{
@@ -460,6 +724,10 @@
         position: relative;
         width: 100%;
         height: 2.3rem;
+
+        @include mobile{
+          height: 1.8rem;
+        }
       }
 
       &__add{
@@ -478,6 +746,10 @@
         border-radius: 100px;
         z-index: 2;
         transition: .5s;
+
+        @include mobile{
+          font-size: .7rem;
+        }
 
         &:hover{
           background-color: #F07D2C;
@@ -518,6 +790,11 @@
         color: #000000;
         transition: .5s;
 
+        @include mobile{
+          width: 1.4rem;
+          height: 1.4rem;
+        }
+
         &:hover{
           background-color: #3D4A36;
           color: #FFFFFF;
@@ -547,6 +824,11 @@
         color: #000000;
         transition: .5s;
 
+        @include mobile{
+          height: 1.8rem;
+          font-size: .7rem;
+        }
+
         &:hover{
           background-color: #3D4A36;
           color: #FFFFFF;
@@ -568,6 +850,12 @@
   border-radius: 100px;
   transition: .5s;
 
+  @include mobile{
+    width: 100%;
+    padding: .5rem 1.2rem;
+    font-size: .7rem;
+  }
+
   &:hover{
       background-color: #F07D2C;
   }
@@ -576,6 +864,10 @@
     margin-top: 2.4rem;
     display: flex;
     justify-content: center;
+
+    @include mobile{
+      margin: .8rem .8rem 0 .8rem;
+    }
   }
 }
 
@@ -590,26 +882,54 @@
     text-align: center;
     text-transform: uppercase;
     color: #000000;
+
+    @include tablet{
+      font-size: 1rem;
+    }
+
+    @include mobile{
+      margin-bottom: 1.2rem;
+    }
+
   }
 
   &__list{
     gap: 1.2rem 1.2rem;
+
+    @include tablet{
+      gap: .8rem .8rem;
+    }
   }
 
   &__item{
     grid-column: span 4;
     position: relative;
     background-color: #EFEFEF;
-    border-radius: 16px;
-    height: fit-content;
+    border-radius: .8rem;
     overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+
+    @include tablet{
+      grid-column: span 6;
+    }
+
+    @include mobile{
+      grid-column: 1 / -1;
+    }
 
     &__image{
       width: 100%;
       height: 14rem;
-      border-radius: 16px;
+      border-radius: .8rem;
       object-fit: cover;
       object-position: center;
+      flex-shrink: 0;
+
+      @include mobile{
+        height: 8rem;
+      }
     }
 
     &__content{
@@ -620,6 +940,10 @@
       gap: 1.2rem 0;
       height: 100%;
 
+      @include mobile{
+        gap: 1.8rem 0;
+      }
+
       &__title{
         margin-bottom: .4rem;
         font-family: Manrope;
@@ -627,6 +951,10 @@
         font-size: 1.2rem;
         line-height: 130%;
         color: #000000;
+
+        @include tablet{
+          font-size: .8rem;
+        }
       }
 
       &__description{
@@ -635,6 +963,10 @@
         font-size: .8rem;
         line-height: 130%;
         color: #000000;
+
+        @include tablet{
+          font-size: .7rem;
+        }
       }
 
       &__button{
@@ -652,6 +984,11 @@
         color: #FFFFFF;
         transition: .5s;
 
+        @include mobile{
+          height: 1.8rem;
+          font-size: .7rem;
+        }
+
         &:hover{
           background-color: #F07D2C;
         }
@@ -662,6 +999,26 @@
 
 .platforms{
 
+  &__inner{
+    display: flex;
+    align-items: flex-start;
+    gap: 0 4rem;
+
+    @include mobile{
+      margin-bottom: 1.2rem;
+      align-items: flex-end;
+      gap: 0;
+    }
+
+    .platforms__navigation{
+      display: none;
+
+      @include tablet{
+        display: flex;
+      }
+    }
+  }
+
   &__title{
     margin-bottom: 2.4rem;
     font-family: Anticva;
@@ -671,24 +1028,61 @@
     text-align: center;
     text-transform: uppercase;
     color: #000000;
+
+    @include tablet{
+      font-size: 1rem;
+      text-align: left;
+    }
+
+    @include mobile{
+      margin-bottom: 0;
+    }
   }
 
   &__list{
     gap: 1.2rem 1.2rem;
+
+    .swiper{
+      width: 100%;
+      overflow: initial !important;
+
+      &-wrapper{
+
+        @media (min-width: 1024px) {
+          display: grid !important;
+          gap: 1.2rem 1.2rem;
+        }
+
+        @include tablet{
+          gap: 0 !important;
+        }
+      }
+
+      &-slide{
+
+        @media (min-width: 1024px) {
+          grid-column: span 4;
+        }
+      }
+    }
   }
 
   &__item{
     grid-column: span 4;
     background-color: #EFEFEF;
-    border-radius: 16px;
+    border-radius: .8rem;
     overflow: hidden;
 
     &__image{
       width: 100%;
       height: 15rem;
-      border-radius: 16px;
+      border-radius: .8rem;
       object-fit: cover;
       object-position: center;
+
+      @include mobile{
+        height: 14.75rem;
+      }
     }
 
     &__information{
@@ -700,6 +1094,10 @@
         font-weight: 600;
         font-size: 1.2rem;
         line-height: 130%;
+
+        @include tablet{
+          font-size: 1rem;
+        }
       }
 
       &__inner{
@@ -760,6 +1158,12 @@
         padding: 0;
         transition: .5s;
 
+        @include mobile{
+          margin-top: 1.5rem;
+          height: 1.8rem;
+          font-size: .7rem;
+        }
+
         &:hover{
           background-color: #F07D2C;
         }
@@ -777,18 +1181,39 @@
     line-height: 100%;
     text-align: center;
     text-transform: uppercase;
+
+    @include tablet{
+      font-size: 1rem;
+    }
+
+    @include mobile{
+      text-align: left;
+    }
   }
 
   &__rating{
     width: 12.55rem;
     height: 2.2rem;
-    object-fit: cover;
     object-position: center;
+
+    @include tablet{
+      width: 9.05rem;
+      height: 1.65rem;
+    }
+
+    @include mobile{
+      width: 9.85rem;
+      height: 1.8rem;
+    }
 
     &__inner{
       margin: .4rem 0 .8rem 0;
       display: flex;
       justify-content: center;
+
+      @include mobile{
+        justify-content: left;
+      }
     }
   }
 
@@ -796,6 +1221,11 @@
     margin-bottom: 2.4rem;
     display: flex;
     justify-content: center;
+
+    @include mobile{
+      margin-bottom: 1.4rem;
+      justify-content: left;
+    }
 
     a{
       padding: 0 1.2rem;
@@ -812,6 +1242,16 @@
       color: #FFFFFF;
       transition: .5s;
 
+      @include tablet{
+        height: 1.7rem;
+      }
+
+      @include mobile{
+        width: 100%;
+        height: 1.8rem;
+        font-size: .7rem;
+      }
+
       &:hover{
         background-color: #3D4A36;
         color: #FFFFFF;
@@ -822,10 +1262,21 @@
   &__gallery{
     position: relative;
 
+    .swiper{
+
+      @include tablet{
+        overflow: initial;
+      }
+    }
+
     &__navigation{
       position: absolute;
       top: calc(-2.4rem - 2.3rem);
       right: 0;
+
+      @include mobile{
+        top: -5.7rem;
+      }
     }
 
     &__item{
@@ -833,8 +1284,13 @@
       height: 29.4rem;
       object-fit: cover;
       object-position: center;
-      border-radius: 16px;
+      border-radius: .8rem;
       line-height: 0;
+
+      @include mobile{
+        width: 100%;
+        height: 25.4rem;
+      }
     }
   }
 }
@@ -843,6 +1299,10 @@
   display: flex;
   align-items: center;
   gap: 0 1.2rem;
+
+  @include tablet{
+    gap: 0 .8rem;
+  }
 }
 
 .navigation__button{
@@ -857,6 +1317,11 @@
   padding: 0;
   transition: .5s;
 
+  @include mobile{
+    width: 1.5rem;
+    height: 1.5rem;
+  }
+
   &:hover{
     background-color: #F07D2C;
   }
@@ -864,6 +1329,11 @@
   svg{
     width: .45rem;
     height: .8rem;
+
+    @include mobile{
+      width: .3rem;
+      height: .5rem;
+    }
   }
 }
 
