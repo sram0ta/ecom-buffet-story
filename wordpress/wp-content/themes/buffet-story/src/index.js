@@ -12,6 +12,7 @@ window.addEventListener('DOMContentLoaded', function() {
     productGallery();
     productTab();
     formCheck();
+    stagesGallery();
 });
 
 document.addEventListener('wpcf7mailsent', initAirPickers);
@@ -83,6 +84,29 @@ const platformsGallery = () => {
             breakpoints: {
                 576: {
                     slidesPerView: 1.7,
+                },
+            }
+        });
+    }
+}
+
+const stagesGallery = () => {
+    if (window.innerWidth > 1024) return;
+
+    if (document.querySelector('#stages-gallery')) {
+        const swiper = new Swiper("#stages-gallery", {
+            slidesPerView: 1.3,
+            spaceBetween: DomUtils.remToPx(.4),
+            speed: 500,
+            loop: true,
+            navigation: {
+                prevEl: '.stages ._prev',
+                nextEl: '.stages ._next',
+            },
+            breakpoints: {
+                576: {
+                    slidesPerView: 2.9,
+                    spaceBetween: DomUtils.remToPx(1),
                 },
             }
         });

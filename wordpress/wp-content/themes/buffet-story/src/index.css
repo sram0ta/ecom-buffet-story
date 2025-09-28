@@ -2038,9 +2038,45 @@ body.fixed {
   text-transform: uppercase;
   color: #000000;
 }
+@media (max-width: 1024px) {
+  .page-catering .stages__title {
+    font-size: 1rem;
+  }
+}
+.page-catering .stages__inner {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+}
+@media (max-width: 1024px) {
+  .page-catering .stages__inner {
+    justify-content: space-between;
+  }
+}
+.page-catering .stages__navigation {
+  display: none;
+}
+@media (max-width: 1024px) {
+  .page-catering .stages__navigation {
+    display: flex;
+  }
+}
 .page-catering .stages__list {
   display: flex;
   gap: 0 0.9rem;
+}
+.page-catering .stages__list .swiper {
+  width: 100%;
+  overflow: initial;
+}
+.page-catering .stages__list .swiper-wrapper {
+  gap: 0 0.9rem;
+}
+.page-catering .stages__list .swiper-slide {
+  width: fit-content;
+}
+.page-catering .stages__list .swiper-slide:last-child .stages__item::before {
+  display: none;
 }
 .page-catering .stages__item {
   position: relative;
@@ -2055,18 +2091,18 @@ body.fixed {
   border-radius: 0.8rem;
   background-color: #EAEAEA;
 }
-.page-catering .stages__item:not(:last-child)::before {
+.page-catering .stages__item::before {
   content: "";
   position: absolute;
   top: 50%;
-  right: 0;
+  right: -3px;
   transform: translate(100%, -50%);
   background-image: url("/wp-content/uploads/2025/09/vector-2.svg");
   background-repeat: no-repeat;
   background-position: center;
   background-size: cover;
-  width: 0.9rem;
-  height: 0.3rem;
+  width: 0.7rem;
+  height: 0.2rem;
 }
 .page-catering .stages__item__icon {
   width: 3rem;
@@ -2098,6 +2134,16 @@ body.fixed {
   flex-direction: column;
   gap: 1.2rem 1.2rem;
 }
+@media (max-width: 1024px) {
+  .page-catering .gallery {
+    gap: 0.8rem 0.8rem;
+  }
+}
+@media (max-width: 1024px) {
+  .page-catering .gallery__two {
+    gap: 0.8rem 0.8rem;
+  }
+}
 .page-catering .gallery__two__image {
   grid-column: span 6;
   width: 100%;
@@ -2106,12 +2152,22 @@ body.fixed {
   object-fit: cover;
   object-position: center;
 }
+@media (max-width: 1024px) {
+  .page-catering .gallery__three {
+    gap: 0.8rem 0.8rem;
+  }
+}
 .page-catering .gallery__three__image {
   width: 100%;
   height: 22.3rem;
   border-radius: 1.2rem;
   object-fit: cover;
   object-position: center;
+}
+@media (max-width: 1024px) {
+  .page-catering .gallery__three__image {
+    height: 11.85rem;
+  }
 }
 .page-catering .gallery__three__image:nth-child(1) {
   grid-column: span 3;

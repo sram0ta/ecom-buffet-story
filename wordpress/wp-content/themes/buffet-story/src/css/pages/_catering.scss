@@ -13,11 +13,56 @@
       text-align: center;
       text-transform: uppercase;
       color: #000000;
+
+      @include tablet{
+        font-size: 1rem;
+      }
+    }
+
+    &__inner{
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+
+      @include tablet{
+        justify-content: space-between;
+      }
+    }
+
+    &__navigation{
+      display: none;
+
+      @include tablet{
+        display: flex;
+      }
     }
 
     &__list{
       display: flex;
       gap: 0 .9rem;
+
+      .swiper{
+        width: 100%;
+        overflow: initial;
+
+        &-wrapper{
+          gap: 0 .9rem;
+        }
+
+        &-slide{
+          width: fit-content;
+
+          &:last-child{
+
+            .stages__item{
+
+              &::before{
+                display: none;
+              }
+            }
+          }
+        }
+      }
     }
 
     &__item{
@@ -33,18 +78,18 @@
       border-radius: .8rem;
       background-color: #EAEAEA;
 
-      &:not(:last-child)::before{
+      &::before{
         content: '';
         position: absolute;
         top: 50%;
-        right: 0;
+        right: -3px;
         transform: translate(100%, -50%);
         background-image: url("/wp-content/uploads/2025/09/vector-2.svg");
         background-repeat: no-repeat;
         background-position: center;
         background-size: cover;
-        width: .9rem;
-        height: .3rem;
+        width: .7rem;
+        height: .2rem;
       }
 
       &__icon{
@@ -83,7 +128,15 @@
     flex-direction: column;
     gap: 1.2rem 1.2rem;
 
+    @include tablet{
+      gap: .8rem .8rem;
+    }
+
     &__two{
+
+      @include tablet{
+        gap: .8rem .8rem;
+      }
 
       &__image{
         grid-column: span 6;
@@ -97,12 +150,20 @@
 
     &__three{
 
+      @include tablet{
+        gap: .8rem .8rem;
+      }
+
       &__image{
         width: 100%;
         height: 22.3rem;
         border-radius: 1.2rem;
         object-fit: cover;
         object-position: center;
+
+        @include tablet{
+          height: 11.85rem;
+        }
 
         &:nth-child(1){
           grid-column: span 3;
