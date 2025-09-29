@@ -13,6 +13,7 @@ window.addEventListener('DOMContentLoaded', function() {
     productTab();
     formCheck();
     stagesGallery();
+    countAnimation();
 });
 
 document.addEventListener('wpcf7mailsent', initAirPickers);
@@ -523,3 +524,42 @@ class CatalogFilter {
 document.addEventListener('DOMContentLoaded', () => {
     new CatalogFilter();
 });
+
+const countAnimation = () => {
+    const counters = document.querySelectorAll(".about__number__count");
+    let started = false;
+
+    function animateCounter(el) {
+        const target = parseInt(el.textContent, 10);
+        let current = 0;
+        const duration = 2000; // 2 секунды
+        const step = Math.ceil(target / (duration / 16));
+
+        el.textContent = "1";
+
+        const timer = setInterval(() => {
+            current += step;
+            if (current >= target) {
+                el.textContent = target;
+                clearInterval(timer);
+            } else {
+                el.textContent = current;
+            }
+        }, 16);
+    }
+
+    const observer = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting && !started) {
+                counters.forEach(counter => animateCounter(counter));
+                started = true;
+            }
+        });
+    }, { threshold: 0.3 });
+
+    const aboutBlock = document.querySelector(".about");
+    if (aboutBlock) {
+        observer.observe(aboutBlock);
+    }
+
+}

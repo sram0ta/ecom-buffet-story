@@ -11,6 +11,10 @@
       text-align: center;
       text-transform: uppercase;
       color: #000000;
+
+      @include tablet{
+        font-size: 1rem;
+      }
     }
 
     &__description{
@@ -25,6 +29,12 @@
     &__list{
       margin-top: 2.4rem;
       height: 10rem;
+
+      @include mobile{
+        margin-top: 1.2rem;
+        height: initial;
+        gap: .4rem .4rem;
+      }
     }
 
     &__number{
@@ -37,6 +47,15 @@
       flex-direction: column;
       gap: .25rem 0;
 
+      @include tablet{
+        grid-column: span 4;
+      }
+
+      @include mobile{
+        grid-column: span 2;
+        padding: 1.2rem 0;
+      }
+
       &__count{
         position: relative;
         font-family: Manrope;
@@ -44,6 +63,10 @@
         font-size: 3.2rem;
         line-height: 150%;
         color: #FFFFFF;
+
+        @include mobile{
+          font-size: 2.4rem;
+        }
 
         &::after{
           content: '+';
@@ -75,6 +98,15 @@
       background-color: #F07D2C;
       border-radius: .8rem;
 
+      @include tablet{
+        display: none;
+      }
+
+      @include mobile{
+        display: flex;
+        grid-column: span 2;
+      }
+
       &__description{
         max-width: 23.5rem;
         font-family: Anticva;
@@ -83,6 +115,11 @@
         line-height: 100%;
         text-align: center;
         color: #FFFFFF;
+
+        @include mobile{
+          font-size: .6rem;
+          padding: 0 .2rem;
+        }
       }
     }
   }
@@ -100,10 +137,19 @@
       text-align: center;
       text-transform: uppercase;
       color: #000000;
+
+      @include tablet{
+        text-align: left;
+        font-size: 1rem;
+      }
     }
 
-    &__list{
+    &__list {
       gap: 1.2rem 1.2rem;
+
+      @include mobile{
+        gap: .8rem .8rem;
+      }
     }
 
     &__item{
@@ -113,12 +159,22 @@
       background-color: #EFEFEF;
       height: 100%;
 
+      @include tablet{
+        grid-column: 1 / -1;
+      }
+
       &__image{
         margin-bottom: .8rem;
         width: 2.2rem;
         height: 2.2rem;
         object-fit: cover;
         object-position: center;
+
+        @include mobile{
+          margin-bottom: 2.25rem;
+          width: 3rem;
+          height: 3rem;
+        }
       }
 
       &__title{
@@ -128,6 +184,10 @@
         font-size: 1.2rem;
         line-height: 130%;
         color: #000000;
+
+        @include mobile {
+          font-size: .8rem;
+        }
       }
 
       &__description{
@@ -136,6 +196,10 @@
         font-size: .8rem;
         line-height: 130%;
         color: #000000;
+
+        @include mobile{
+          font-size: .7rem;
+        }
       }
     }
   }

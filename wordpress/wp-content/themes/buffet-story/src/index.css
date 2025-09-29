@@ -2189,6 +2189,11 @@ body.fixed {
   text-transform: uppercase;
   color: #000000;
 }
+@media (max-width: 1024px) {
+  .page-about .about__title {
+    font-size: 1rem;
+  }
+}
 .page-about .about__description {
   font-family: Manrope;
   font-weight: 400;
@@ -2201,6 +2206,13 @@ body.fixed {
   margin-top: 2.4rem;
   height: 10rem;
 }
+@media (max-width: 576px) {
+  .page-about .about__list {
+    margin-top: 1.2rem;
+    height: initial;
+    gap: 0.4rem 0.4rem;
+  }
+}
 .page-about .about__number {
   grid-column: span 2;
   border-radius: 0.8rem;
@@ -2211,6 +2223,17 @@ body.fixed {
   flex-direction: column;
   gap: 0.25rem 0;
 }
+@media (max-width: 1024px) {
+  .page-about .about__number {
+    grid-column: span 4;
+  }
+}
+@media (max-width: 576px) {
+  .page-about .about__number {
+    grid-column: span 2;
+    padding: 1.2rem 0;
+  }
+}
 .page-about .about__number__count {
   position: relative;
   font-family: Manrope;
@@ -2218,6 +2241,11 @@ body.fixed {
   font-size: 3.2rem;
   line-height: 150%;
   color: #FFFFFF;
+}
+@media (max-width: 576px) {
+  .page-about .about__number__count {
+    font-size: 2.4rem;
+  }
 }
 .page-about .about__number__count::after {
   content: "+";
@@ -2245,6 +2273,17 @@ body.fixed {
   background-color: #F07D2C;
   border-radius: 0.8rem;
 }
+@media (max-width: 1024px) {
+  .page-about .about__information {
+    display: none;
+  }
+}
+@media (max-width: 576px) {
+  .page-about .about__information {
+    display: flex;
+    grid-column: span 2;
+  }
+}
 .page-about .about__information__description {
   max-width: 23.5rem;
   font-family: Anticva;
@@ -2253,6 +2292,12 @@ body.fixed {
   line-height: 100%;
   text-align: center;
   color: #FFFFFF;
+}
+@media (max-width: 576px) {
+  .page-about .about__information__description {
+    font-size: 0.6rem;
+    padding: 0 0.2rem;
+  }
 }
 .page-about .profitable {
   display: flex;
@@ -2268,8 +2313,19 @@ body.fixed {
   text-transform: uppercase;
   color: #000000;
 }
+@media (max-width: 1024px) {
+  .page-about .profitable__title {
+    text-align: left;
+    font-size: 1rem;
+  }
+}
 .page-about .profitable__list {
   gap: 1.2rem 1.2rem;
+}
+@media (max-width: 576px) {
+  .page-about .profitable__list {
+    gap: 0.8rem 0.8rem;
+  }
 }
 .page-about .profitable__item {
   grid-column: span 4;
@@ -2278,12 +2334,24 @@ body.fixed {
   background-color: #EFEFEF;
   height: 100%;
 }
+@media (max-width: 1024px) {
+  .page-about .profitable__item {
+    grid-column: 1/-1;
+  }
+}
 .page-about .profitable__item__image {
   margin-bottom: 0.8rem;
   width: 2.2rem;
   height: 2.2rem;
   object-fit: cover;
   object-position: center;
+}
+@media (max-width: 576px) {
+  .page-about .profitable__item__image {
+    margin-bottom: 2.25rem;
+    width: 3rem;
+    height: 3rem;
+  }
 }
 .page-about .profitable__item__title {
   margin-bottom: 0.4rem;
@@ -2293,12 +2361,22 @@ body.fixed {
   line-height: 130%;
   color: #000000;
 }
+@media (max-width: 576px) {
+  .page-about .profitable__item__title {
+    font-size: 0.8rem;
+  }
+}
 .page-about .profitable__item__description {
   font-family: Manrope;
   font-weight: 300;
   font-size: 0.8rem;
   line-height: 130%;
   color: #000000;
+}
+@media (max-width: 576px) {
+  .page-about .profitable__item__description {
+    font-size: 0.7rem;
+  }
 }
 
 .single-product .product__information__gallery {

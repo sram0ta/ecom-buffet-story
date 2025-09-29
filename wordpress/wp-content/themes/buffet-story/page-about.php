@@ -51,67 +51,9 @@ get_header();
                 ?>
             </div>
         </div>
-        <div class="platforms container">
-            <div class="platforms__title">Предлагаем площадки под ваше мероприятия на лучших условиях</div>
-            <div class="platforms__list grid-12">
-                <?php
-                $my_posts = get_posts( array(
-                    'numberposts' => -1,
-                    'post_type'   => 'platforms',
-                    'suppress_filters' => true,
-                ) );
-
-                foreach( $my_posts as $post ){
-                    setup_postdata( $post );
-                    ?>
-                    <div class="platforms__item">
-                        <img src="<?php the_post_thumbnail_url(); ?>" alt="" class="platforms__item__image" loading="lazy">
-                        <div class="platforms__item__information">
-                            <div class="platforms__item__information__title"><?php the_title(); ?></div>
-                            <div class="platforms__item__information__inner">
-                                <div class="platforms__item__information__paragraph">
-                                    <div class="platforms__item__information__paragraph__icon">
-                                        <svg width="13" height="13" viewBox="0 0 13 13" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                            <path d="M1.79994 5.03995L9.98711 1.14187C11.1808 0.573168 12.4264 1.8194 11.8584 3.01368L7.95998 11.1995C7.42704 12.318 5.81207 12.2491 5.37673 11.0886L4.65632 9.16551C4.58593 8.9779 4.4762 8.80753 4.3345 8.66585C4.1928 8.52416 4.02241 8.41443 3.83479 8.34405L1.91088 7.62299C0.750911 7.18768 0.681397 5.57285 1.79994 5.03995Z" stroke="white" stroke-width="0.5" stroke-linecap="round" stroke-linejoin="round"/>
-                                        </svg>
-                                    </div>
-                                    <div class="platforms__item__information__paragraph__title"><?php the_field('address'); ?></div>
-                                </div>
-                                <div class="platforms__item__information__paragraph">
-                                    <div class="platforms__item__information__paragraph__icon">
-                                        <svg width="14" height="13" viewBox="0 0 14 13" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                            <path d="M8.33398 4.91406L8.38965 5.08691H12.8887L9.39551 7.62402L9.24902 7.73047L9.30469 7.90332L10.6387 12.0078L7.14648 9.47168L7 9.36426L6.85352 9.47168L3.36035 12.0078L4.69531 7.90332L4.75098 7.73047L4.60449 7.62402L1.11133 5.08691H5.61035L5.66602 4.91406L7 0.807617L8.33398 4.91406Z" stroke="white" stroke-width="0.5"/>
-                                        </svg>
-                                    </div>
-                                    <div class="platforms__item__information__paragraph__title"><?php the_field('type'); ?></div>
-                                </div>
-                                <div class="platforms__item__information__paragraph">
-                                    <div class="platforms__item__information__paragraph__icon">
-                                        <svg width="16" height="13" viewBox="0 0 16 13" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                            <path d="M1 5.5L8 1L15 5.5M13.5 4.5V12H2.5V4.5M6.5 8H9.5V12H6.5V8Z" stroke="white" stroke-width="0.5" stroke-linejoin="round"/>
-                                        </svg>
-                                    </div>
-                                    <div class="platforms__item__information__paragraph__title"><?php the_field('square'); ?></div>
-                                </div>
-                                <div class="platforms__item__information__paragraph">
-                                    <div class="platforms__item__information__paragraph__icon">
-                                        <svg width="14" height="11" viewBox="0 0 14 11" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                            <path d="M2 2.75C2 2.45453 2.0582 2.16194 2.17127 1.88896C2.28434 1.61598 2.45008 1.36794 2.65901 1.15901C2.86794 0.950078 3.11598 0.784344 3.38896 0.671271C3.66194 0.558198 3.95453 0.5 4.25 0.5C4.54547 0.5 4.83806 0.558198 5.11104 0.671271C5.38402 0.784344 5.63206 0.950078 5.84099 1.15901C6.04992 1.36794 6.21566 1.61598 6.32873 1.88896C6.4418 2.16194 6.5 2.45453 6.5 2.75C6.5 3.34674 6.26295 3.91903 5.84099 4.34099C5.41903 4.76295 4.84674 5 4.25 5C3.65326 5 3.08097 4.76295 2.65901 4.34099C2.23705 3.91903 2 3.34674 2 2.75ZM4.25 0C3.52065 0 2.82118 0.289731 2.30546 0.805456C1.78973 1.32118 1.5 2.02065 1.5 2.75C1.5 3.47935 1.78973 4.17882 2.30546 4.69454C2.82118 5.21027 3.52065 5.5 4.25 5.5C4.97935 5.5 5.67882 5.21027 6.19454 4.69454C6.71027 4.17882 7 3.47935 7 2.75C7 2.02065 6.71027 1.32118 6.19454 0.805456C5.67882 0.289731 4.97935 0 4.25 0ZM9 3.5C9 3.10218 9.15804 2.72064 9.43934 2.43934C9.72064 2.15804 10.1022 2 10.5 2C10.8978 2 11.2794 2.15804 11.5607 2.43934C11.842 2.72064 12 3.10218 12 3.5C12 3.89782 11.842 4.27936 11.5607 4.56066C11.2794 4.84196 10.8978 5 10.5 5C10.1022 5 9.72064 4.84196 9.43934 4.56066C9.15804 4.27936 9 3.89782 9 3.5ZM10.5 1.5C9.96957 1.5 9.46086 1.71071 9.08579 2.08579C8.71071 2.46086 8.5 2.96957 8.5 3.5C8.5 4.03043 8.71071 4.53914 9.08579 4.91421C9.46086 5.28929 9.96957 5.5 10.5 5.5C11.0304 5.5 11.5391 5.28929 11.9142 4.91421C12.2893 4.53914 12.5 4.03043 12.5 3.5C12.5 2.96957 12.2893 2.46086 11.9142 2.08579C11.5391 1.71071 11.0304 1.5 10.5 1.5ZM1.5 6.5C1.10218 6.5 0.720644 6.65804 0.43934 6.93934C0.158035 7.22064 0 7.60218 0 8C0 8.558 0.2085 9.315 0.8595 9.9315C1.512 10.5495 2.58 11 4.2495 11C5.919 11 6.988 10.55 7.6405 9.9315C8.2915 9.315 8.5 8.558 8.5 8C8.5 7.60218 8.34196 7.22064 8.06066 6.93934C7.77936 6.65804 7.39782 6.5 7 6.5H1.5ZM0.5 8C0.5 7.73478 0.605357 7.48043 0.792893 7.29289C0.98043 7.10536 1.23478 7 1.5 7H7C7.26522 7 7.51957 7.10536 7.70711 7.29289C7.89464 7.48043 8 7.73478 8 8C8 8.442 7.8335 9.06 7.297 9.5685C6.762 10.0755 5.83 10.5 4.25 10.5C2.67 10.5 1.738 10.075 1.203 9.5685C0.6665 9.06 0.5 8.442 0.5 8ZM8.9815 9.294C8.91817 9.44467 8.84117 9.59467 8.7505 9.744C9.2135 9.9025 9.789 10 10.5 10C11.921 10 12.8005 9.6115 13.327 9.12C13.848 8.634 14 8.067 14 7.75C14 7.41848 13.8683 7.10054 13.6339 6.86612C13.3995 6.6317 13.0815 6.5 12.75 6.5H8.677C8.811 6.65 8.9255 6.818 9.016 7H12.75C12.9489 7 13.1397 7.07902 13.2803 7.21967C13.421 7.36032 13.5 7.55109 13.5 7.75C13.5 7.9335 13.402 8.3665 12.9855 8.755C12.575 9.1385 11.829 9.5 10.5 9.5C9.8725 9.5 9.375 9.4195 8.9815 9.294Z" fill="white"/>
-                                        </svg>
-                                    </div>
-                                    <div class="platforms__item__information__paragraph__title"><?php the_field('capacity'); ?></div>
-                                </div>
-                            </div>
-                            <a href="#form" class="platforms__item__information__more">Подробнее</a>
-                        </div>
-                    </div>
-                    <?php
-                } wp_reset_postdata();
-                ?>
-            </div>
-        </div>
+        <?= get_template_part('template-part/section-platforms') ?>
         <div class="profitable container">
-            <div class="profitable__title"><?php the_field('profitable_title'); ?></div>
+            <div class="profitable__title"><?php the_field( 'profitable_title'); ?></div>
             <div class="profitable__list grid-12">
                 <?php
                     while ( have_rows('repeater_profitable') ) : the_row();
