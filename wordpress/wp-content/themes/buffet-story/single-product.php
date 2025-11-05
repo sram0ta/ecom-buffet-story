@@ -39,6 +39,15 @@ get_header();
                     </button>
                 </div>
                 <div class="product__information__gallery__main">
+                    <?php if (get_field('product_tag')): ?>
+                        <div class="product-item__tag">
+                            <svg class="product-item__tag__icon" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <rect width="20" height="20" rx="10" fill="white"/>
+                                <path d="M11.334 7.91406L11.3896 8.08691H15.8887L12.3955 10.624L12.249 10.7305L12.3047 10.9033L13.6387 15.0078L10.1465 12.4717L10 12.3643L9.85352 12.4717L6.36035 15.0078L7.69531 10.9033L7.75098 10.7305L7.60449 10.624L4.11133 8.08691H8.61035L8.66602 7.91406L10 3.80762L11.334 7.91406Z" stroke="#F07D2C" stroke-width="0.5"/>
+                            </svg>
+                            <div class="product-item__tag__title"><?= get_field('product_tag')->name; ?></div>
+                        </div>
+                    <?php endif; ?>
                     <div class="swiper">
                         <div class="swiper-wrapper">
                             <div class="swiper-slide">
@@ -56,11 +65,29 @@ get_header();
             <div class="product__information__inner">
                 <div class="product__information__content">
                     <?php
-                    $weight = $product->get_weight();
-                    $unit   = get_option('woocommerce_weight_unit')
+                    $unit = get_option('woocommerce_weight_unit');
+
+                    $weight       = $product->get_attribute('pa_weight');
+                    $weight_title = wc_attribute_label('pa_weight');
+
+                    $volume       = $product->get_attribute('pa_volume');
+                    $volume_title = wc_attribute_label('pa_volume');
+
+                    if ( !empty($weight) ) {
+                        $attr_value = $weight;
+                        $attr_title = $weight_title;
+                    } elseif ( !empty($volume) ) {
+                        $attr_value = $volume;
+                        $attr_title = $volume_title;
+                    } else {
+                        $attr_value = '';
+                        $attr_title = '';
+                    }
+
+                    $quantity = $product->get_attribute('pa_quantity');
                     ?>
                     <h1 class="product__information__content__title"><?php the_title(); ?></h1>
-                    <div class="product__information__content__weight">Вес: <span><?= wc_format_localized_decimal($weight) ?> гр.</span></div>
+                    <div class="product__information__content__weight"><?= $attr_title; ?>: <span><?= $attr_value ?></span></div>
                     <p class="product__information__content__description"><?php the_field('boxing_composition'); ?></p>
                     <?php
                     $cart_qty = 0;
@@ -72,13 +99,16 @@ get_header();
                             }
                         }
                     }
+
+                    $minOrderRaw = $product->get_attribute('pa_minimum-order');
+                    // вытащим только число
+                    preg_match('/\d+/', $minOrderRaw, $matches);
+                    $minOrder = isset($matches[0]) ? (int) $matches[0] : 1;
                     ?>
-                    <div class="product-item__content__buttons__inner" data-product-id="<?php echo esc_attr($product->get_id()); ?>">
-                        <?php if ( $cart_qty <= 1 ) : ?>
-                            <button class="product-item__content__buttons__add <?php echo $cart_qty > 0 ? 'active' : ''; ?>">
-                                В корзину
-                            </button>
-                        <?php endif; ?>
+                    <div class="product-item__content__buttons__inner" data-product-id="<?php echo esc_attr($product->get_id()); ?>" data-min-value="<?= esc_attr($minOrder); ?>">
+                        <button class="product-item__content__buttons__add <?php echo $cart_qty > 0 ? 'active' : ''; ?>">
+                            В корзину
+                        </button>
                         <div class="product-item__content__buttons__wrapper" style="<?php echo $cart_qty > 0 ? '' : 'display:none;'; ?>">
                             <button class="product-item__content__buttons__count-value">-</button>
                             <div class="product-item__content__buttons__count-number"><?php echo $cart_qty > 0 ? $cart_qty : 1; ?></div>
@@ -89,6 +119,16 @@ get_header();
                         <div class="product__information__content__price__title">Стоимость за бокс</div>
                         <div class="product__information__content__price__number"><?= esc_attr($product->get_price()); ?>₽</div>
                     </div>
+                    <?php
+                    if ($minOrder){
+                        ?>
+                        <div class="product__information__content__min">
+                            <div class="product__information__content__min__title">Минимальный заказ</div>
+                            <div class="product__information__content__min__value"><?= esc_html($minOrder); ?></div>
+                        </div>
+                        <?php
+                    }
+                    ?>
                 </div>
                 <div class="product__information__contacts">
                     <div class="product__information__contacts__description">Есть вопросы? <a href="#form">Нажмите тут,</a> чтобы уточнить у менеджера</div>
@@ -138,27 +178,14 @@ get_header();
         <div class="tabs__content" data-content="questions">
             <div class="tabs__content__questions">
                 <?php
-                    $product_id = get_the_ID();
-                    $terms = wp_get_post_terms($product_id, 'product_cat', [
-                        'orderby' => 'menu_order',
-                        'order'   => 'ASC',
-                    ]);
-
-                    foreach ($terms as $term):
-                        $questions = get_field('repeater_questions', "product_cat_{$term->term_id}");
-                        if (empty($questions) || !is_array($questions)) continue;
-                        foreach ($questions as $row):
-                            $q = isset($row['question']) ? trim((string)$row['question']) : '';
-                            $a = isset($row['answer'])   ? (string)$row['answer'] : '';
-                            if ($q === '') continue;
-                            ?>
-                            <div class="tabs__content__questions__item">
-                                <div class="tabs__content__questions__item__title"><?= esc_html($q); ?></div>
-                                <p class="tabs__content__questions__item__description"><?= wp_kses_post($a); ?></p>
-                            </div>
-                            <?php
-                        endforeach;
-                    endforeach;
+                    while ( have_rows('repeater_questions_products', 110) ) : the_row();
+                        ?>
+                        <div class="tabs__content__questions__item">
+                            <div class="tabs__content__questions__item__title"><?php the_sub_field('question') ?></div>
+                            <p class="tabs__content__questions__item__description"><?php the_sub_field('answer') ?></p>
+                        </div>
+                    <?php
+                    endwhile;
                 ?>
             </div>
         </div>
@@ -168,10 +195,18 @@ get_header();
         <div class="product-block__list grid-12">
             <?php
             $args = [
-                'post_type'      => 'product',
+                'post_type' => 'product',
+                'taxonomy' => 'gotovye-boksy',
                 'posts_per_page' => 4,
-                'orderby'        => 'date',
-                'order'          => 'DESC',
+                'post_status' => 'publish',
+                'orderby' => 'rand',
+                'tax_query' => [
+                    [
+                        'taxonomy' => 'product_cat',
+                        'field'    => 'slug',
+                        'terms'    => ['gotovye-boksy'],
+                    ],
+                ],
             ];
             $loop = new WP_Query($args);
 

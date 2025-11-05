@@ -107,22 +107,38 @@ get_header();
                         <?php endif; ?>
                         <img src="<?php the_post_thumbnail_url(); ?>" alt="" class="product-item__image">
                         <div class="product-item__content">
-                            <div class="product-item__content__inner">
-                                <h3 class="product-item__content__title"><?php the_title(); ?></h3>
-                                <div class="product-item__content__weight"><?= $product->get_weight(); ?> гр</div>
-                            </div>
-                            <p class="product-item__content__description"><?php the_field('boxing_composition'); ?></p>
-                            <div class="product-item__content__price"><?= $product->get_price_html(); ?></div>
-                            <div class="product-item__content__buttons">
-                                <div class="product-item__content__buttons__inner" data-product-id="<?php echo esc_attr($product->get_id()); ?>">
-                                    <button class="product-item__content__buttons__add">В корзину</button>
-                                    <div class="product-item__content__buttons__wrapper">
-                                        <button class="product-item__content__buttons__count-value">-</button>
-                                        <div class="product-item__content__buttons__count-number">1</div>
-                                        <button class="product-item__content__buttons__count-value">+</button>
-                                    </div>
+                            <div class="product-item__content_wrapper">
+                                <div class="product-item__content__inner">
+                                    <h3 class="product-item__content__title"><?php the_title(); ?></h3>
+                                    <?php
+                                    if ($product->get_weight()){
+                                        ?>
+                                            <div class="product-item__content__weight"><?= $product->get_weight(); ?> гр</div>
+                                        <?php
+                                    }
+                                    ?>
                                 </div>
-                                <a href="<?php the_permalink(); ?>" class="product-item__content__buttons__more">Подробнее</a>
+                                <?php
+                                if (get_field('boxing_composition')){
+                                    ?>
+                                        <p class="product-item__content__description"><?php the_field('boxing_composition'); ?></p>
+                                    <?php
+                                }
+                                ?>
+                            </div>
+                            <div class="product-item__content_wrapper">
+                                <div class="product-item__content__price"><?= $product->get_price_html(); ?></div>
+                                <div class="product-item__content__buttons">
+                                    <div class="product-item__content__buttons__inner" data-product-id="<?php echo esc_attr($product->get_id()); ?>">
+                                        <button class="product-item__content__buttons__add">В корзину</button>
+                                        <div class="product-item__content__buttons__wrapper">
+                                            <button class="product-item__content__buttons__count-value">-</button>
+                                            <div class="product-item__content__buttons__count-number">1</div>
+                                            <button class="product-item__content__buttons__count-value">+</button>
+                                        </div>
+                                    </div>
+                                    <a href="<?php the_permalink(); ?>" class="product-item__content__buttons__more">Подробнее</a>
+                                </div>
                             </div>
                         </div>
                     </div>

@@ -66,6 +66,7 @@
         font-weight: 500;
         font-size: .8rem;
         line-height: 100%;
+        box-sizing: border-box;
         transition: .5s;
 
         @include tablet{
@@ -583,6 +584,8 @@
   border-radius: .8rem;
   background-color: #FFFFFF;
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
 
   @include tablet{
     grid-column: span 6;
@@ -600,9 +603,10 @@
     display: flex;
     align-items: center;
     gap: .2rem;
-    padding: .05rem .2rem .05rem .05rem;
+    padding: .05rem .4rem .05rem .05rem;
     background-color: #F07D2C;
     border-radius: 100px;
+    z-index: 2;
 
     @include mobile{
       top: .4rem;
@@ -623,7 +627,7 @@
       text-transform: uppercase;
 
       @include mobile{
-        font-size: .4rem;
+        font-size: .5rem;
       }
     }
   }
@@ -634,6 +638,7 @@
     object-fit: cover;
     object-position: center;
     border-radius: .8rem;
+    flex-shrink: 0;
 
     @include mobile{
       height: 8rem;
@@ -642,6 +647,10 @@
 
   &__content{
     padding: .8rem;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
 
     @include mobile{
       padding: .4rem;
@@ -981,6 +990,9 @@
         font-size: .8rem;
         line-height: 100%;
         text-align: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
         color: #FFFFFF;
         transition: .5s;
 
@@ -1377,6 +1389,25 @@
     padding: 0;
     transition: .5s;
 
+    @include tablet{
+      width: 2rem;
+      height: 2rem;
+    }
+
+    @include mobile{
+      width: 1.5rem;
+      height: 1.5rem;
+      top: 2.25rem;
+      right: 2.25rem;
+
+      svg{
+
+        circle{
+          fill: #596051;
+        }
+      }
+    }
+
     &:hover{
 
       svg{
@@ -1398,11 +1429,29 @@
   }
 
   &__content{
-    margin-top: 6.4rem;
+    margin-top: 1.4rem;
+    margin-bottom: 1.4rem;
     padding: 1.75rem 2.4rem 3.2rem 2.4rem;
     border-radius: .8rem;
     background-color: #F6F6F6;
-    width: 33rem;
+    width: 45rem;
+    overflow: auto;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+
+    @include tablet{
+      max-width: 30rem;
+      padding: 1.75rem .9rem
+    }
+
+    @include mobile{
+      max-width: 16.4rem;
+      padding: 1.2rem .6rem
+    }
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
 
     &__title{
       font-family: Manrope;
@@ -1411,6 +1460,10 @@
       line-height: 100%;
       text-align: center;
       color: #000000;
+
+      @include mobile{
+        font-size: 1rem;
+      }
     }
 
     &__hr{
@@ -1418,11 +1471,196 @@
       height: 1px;
       background-color: #D1D7CE;
       border: none;
+      margin: 0;
+
+      @include mobile{
+        width: 100%;
+      }
 
       &__inner{
+        margin: 1.4rem 0 2.4rem 0;
         display: flex;
         justify-content: center;
+
+        @include mobile{
+          margin: 1rem 0 1.2rem 0;
+        }
+      }
+    }
+
+    &__products{
+      display: flex;
+      flex-direction: column;
+      gap: 1.2rem 0;
+
+      &__item{
+        display: flex;
+        gap: 0 1.2rem;
+
+        @include mobile{
+          gap: 0 .8rem;
+        }
+
+        &__image{
+          width: 7.8rem;
+          height: 7.8rem;
+          border-radius: .8rem;
+          flex-shrink: 0;
+
+          @include mobile{
+            width: 3.2rem;
+            height: 3.2rem;
+          }
+        }
+
+        &__content{
+          width: 100%;
+          display: flex;
+          flex-direction: column;
+          justify-content: space-between;
+          gap: 1rem 0;
+
+          &__title{
+            font-family: Manrope;
+            font-weight: 700;
+            font-size: 1.2rem;
+            line-height: 130%;
+
+            @include mobile{
+              font-size: .7rem;
+            }
+          }
+
+          &__inner{
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 0 2rem;
+          }
+
+          &__delete{
+            border: none;
+            padding: 0;
+            transition: .5s;
+
+            &:hover{
+              opacity: .5;
+            }
+
+            svg{
+              width: 1.9rem;
+              height: 1.9rem;
+
+              @include mobile{
+                width: .8rem;
+                height: .8rem;
+              }
+            }
+          }
+
+          &__control{
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            .product-item__content__buttons__inner{
+              max-width: 7rem;
+
+              @include mobile{
+                max-width: 5rem;
+              }
+            }
+
+            &__price{
+              font-family: Manrope;
+              font-weight: 700;
+              font-size: 1.2rem;
+              line-height: 130%;
+
+              @include mobile{
+                font-size: .8rem;
+              }
+            }
+          }
+        }
+      }
+
+      &__hr{
+        width: 100%;
+        margin: 0;
+        height: .05rem;
+        background-color: #D1D7CE;
+        border: none;
+      }
+    }
+
+    &__all-price{
+      margin-top: 2.4rem;
+      font-family: Manrope;
+      font-weight: 700;
+      font-size: 1.6rem;
+      line-height: 130%;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 0 .25rem;
+
+      @include mobile{
+        margin-top: 1.2rem;
+        font-size: 1rem;
+      }
+    }
+
+    &__form{
+      margin-top: 2.4rem;
+
+      .form__item{
+        margin-bottom: 1.2rem;
+
+        &__title{
+          color: #000000;
+        }
+      }
+
+      .form__button{
+        margin-top: 1.8rem;
+
+        @include mobile{
+          margin-top: 1.2rem;
+        }
+
+        &:hover{
+          opacity: 1;
+          background-color: #596051;
+        }
+      }
+
+      .form__check{
+
+        &__title{
+          color: #000000;
+        }
       }
     }
   }
+}
+
+.wpcf7-not-valid-tip{
+  display: none !important;
+}
+
+.air-datepicker-global-container{
+  z-index: 99999999999;
+}
+
+.popup__empty{
+  font-family: Manrope;
+  font-weight: 700;
+  font-size: 1.2rem;
+  line-height: 130%;
+  color: #000000;
+}
+
+.wpcf7-response-output{
+  display: none !important;
 }

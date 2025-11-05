@@ -30,12 +30,29 @@
     <nav class="header__navigation">
         <?php
         global $post;
+
         $menu_items = wp_get_nav_menu_items(16);
 
+        $current_url = trailingslashit( home_url( add_query_arg( [], $wp->request ) ) );
+
         foreach ($menu_items as $menu_item) {
-            $active_class = ($menu_item->object_id == $post->ID) ? 'active' : '';
+            $item_url = trailingslashit( $menu_item->url );
+
+            $active_class = '';
+
+            if ( isset($post->ID) && (int)$menu_item->object_id === (int)$post->ID ) {
+                $active_class = 'active';
+            }
+
+            elseif ( strpos($current_url, $item_url) === 0 ) {
+                $active_class = 'active';
+            }
+
             ?>
-            <a href="<?= esc_url($menu_item->url); ?>" class="header__navigation__item <?= $active_class; ?>"><?= esc_html($menu_item->title); ?></a>
+            <a href="<?= esc_url($menu_item->url); ?>"
+               class="header__navigation__item <?= esc_attr($active_class); ?>">
+                <?= esc_html($menu_item->title); ?>
+            </a>
             <?php
         }
         ?>
@@ -98,11 +115,19 @@
                     $product_id = (int) $cart_item['product_id'];
                     $qty        = (int) $cart_item['quantity'];
                     $title      = $prod->get_name();
-                    $img_html   = $prod->get_image('thumbnail', ['class' => 'popup__content__products__item__image']);
                     $price_html = wc_price( WC()->cart->get_product_subtotal( $prod, $qty ) );
+
+                    $minOrder_for_this_product = trim( (string) $prod->get_attribute('pa_minimum-order', $prod->id) );
+                    if ($minOrder_for_this_product === '') {
+                        $minOrder_for_this_product = '1';
+                    }
+
+
+                    preg_match('/\d+/', $minOrder_for_this_product, $matches);
+                    $minOrder_for_this_product = isset($matches[0]) ? (int) $matches[0] : 1;
                     ?>
                     <div class="popup__content__products__item" data-product-id="<?php echo esc_attr($product_id); ?>">
-                        <?php echo $img_html; ?>
+                    <img src="<?= esc_url( get_the_post_thumbnail_url($prod->id)) ?>" alt="" class="popup__content__products__item__image sd">
                         <div class="popup__content__products__item__content">
                             <div class="popup__content__products__item__content__inner">
                                 <div class="popup__content__products__item__content__title"><?php echo esc_html($title); ?></div>
@@ -113,21 +138,35 @@
                                     </svg>
                                 </button>
                             </div>
+                            <?php
+                            $unit_display_price = wc_get_price_to_display( $prod );
+
+                            $currency_code = get_woocommerce_currency();
+
+                            $decimals = wc_get_price_decimals();
+                            ?>
                             <div class="popup__content__products__item__content__control">
-                                <div class="product-item__content__buttons__inner" data-product-id="<?php echo esc_attr($product_id); ?>">
+                                <div class="product-item__content__buttons__inner" data-product-id="<?php echo esc_attr($product_id); ?>" data-min-value="<?php echo esc_attr($minOrder_for_this_product); ?>">
                                     <div class="product-item__content__buttons__wrapper">
                                         <button class="product-item__content__buttons__count-value" type="button">-</button>
                                         <div class="product-item__content__buttons__count-number"><?php echo $qty ?: 1; ?></div>
                                         <button class="product-item__content__buttons__count-value" type="button">+</button>
                                     </div>
                                 </div>
-                                <div class="popup__content__products__item__content__control__price"><?php echo $price_html; ?></div>
+                                <div class="popup__content__products__item__content__control__price" data-unit-price="<?php echo esc_attr( $unit_display_price ); ?>"  data-currency="<?php echo esc_attr( $currency_code ); ?>" data-decimals="<?php echo esc_attr( $decimals ); ?>"><?php echo wc_price( WC()->cart->get_product_subtotal( $prod, $qty ) ); ?>></div>
                             </div>
                         </div>
                     </div>
                     <hr class="popup__content__products__hr">
                 <?php endforeach; ?>
             <?php endif; ?>
+        </div>
+        <div class="popup__content__all-price">
+            <span class="popup__content__all-price__title">ИТОГ: </span>
+            <span class="popup__content__all-price__coast"></span>
+        </div>
+        <div class="popup__content__form">
+            <?= do_shortcode('[contact-form-7 id="9b1a87e" title="Форма для заказа"]') ?>
         </div>
     </div>
 </div>

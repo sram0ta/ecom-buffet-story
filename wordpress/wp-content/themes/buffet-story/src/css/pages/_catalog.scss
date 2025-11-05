@@ -1,13 +1,34 @@
 .page-catalog{
 
+  .form-catalog{
+
+    @include mobile{
+      display: none;
+    }
+  }
+
+  .hero{
+    display: none;
+
+    @include mobile{
+      display: flex;
+    }
+  }
+
   .catalog{
 
     h1{
+      margin-bottom: 1.2rem;
       font-family: Anticva;
       font-weight: 400;
       font-size: 2rem;
       line-height: 150%;
       color: #000000;
+
+      @include tablet{
+        text-align: center;
+        font-size: 1rem;
+      }
     }
 
     &__category{
@@ -15,6 +36,15 @@
       align-items: center;
       gap: .8rem .8rem;
       flex-wrap: wrap;
+
+      @include tablet{
+        justify-content: center;
+      }
+
+      @include mobile{
+        gap: .4rem .4rem;
+        justify-content: flex-start;
+      }
 
       &__button{
         padding: 0 1.2rem;
@@ -30,6 +60,12 @@
         color: #000000;
         transition: .5s;
 
+        @include mobile{
+          padding: 0 .4rem;
+          height: 1.8rem;
+          font-size: .55rem;
+        }
+
         &.active{
           background-color: #3D4A36;
           color: #fff;
@@ -39,6 +75,10 @@
 
     &__inner{
       margin-top: 1.2rem;
+
+      @include tablet{
+        margin-top: 2.4rem;
+      }
     }
 
     &__filters{
@@ -46,6 +86,11 @@
       padding: 1.6rem 1.2rem;
       background-color: #F6F6F6;
       border-radius: 1.2rem;
+      height: fit-content;
+
+      @include tablet{
+        display: none;
+      }
 
       &__title{
         margin-bottom: 1.2rem;
@@ -91,14 +136,9 @@
               transform: rotateX(180deg);
             }
           }
-
-          .catalog__filters__category__list{
-            //margin-top: .8rem;
-          }
         }
 
         &__list{
-          //margin-top: .8rem;
           display: flex;
           flex-direction: column;
           gap: .8rem 0;
@@ -140,6 +180,10 @@
 
           &:first-child{
             margin-top: .8rem;
+          }
+
+          &.is-zero{
+            display: none;
           }
 
           &.active{
@@ -205,6 +249,15 @@
       grid-column: 4 / -1;
       grid-template-columns: repeat(9, 1fr);
       gap: 1.2rem 1.2rem;
+
+      @include tablet{
+        grid-column: 1 / -1;
+        grid-template-columns: repeat(12, 1fr);
+      }
+
+      @include mobile{
+        grid-template-columns: repeat(4, 1fr);
+      }
     }
   }
 }
@@ -216,6 +269,11 @@
   max-height: 19.2rem;
   min-height: 19.2rem;
 
+  @include tablet{
+    max-height: initial;
+    min-height: initial;
+  }
+
   &__content{
     grid-column: 1 / 7;
     padding: 2.4rem 0 2.4rem 2.4rem;
@@ -225,6 +283,16 @@
     justify-content: space-between;
     gap: 1.9rem 0;
 
+    @include tablet{
+      grid-column: 1 / -1;
+      padding: 2.4rem;
+      align-items: center;
+    }
+
+    @include mobile{
+      padding: 1.2rem;
+    }
+
     &__title{
       margin-bottom: 1.2rem;
       font-family: Anticva;
@@ -232,6 +300,15 @@
       font-size: 1.2rem;
       line-height: 150%;
       color: #FFFFFF;
+
+      @include tablet{
+        text-align: center;
+      }
+
+      @include mobile{
+        margin-bottom: .8rem;
+        font-size: 1rem;
+      }
     }
 
     &__description{
@@ -240,6 +317,14 @@
       font-size: .8rem;
       line-height: 150%;
       color: #FFFFFF;
+
+      @include tablet{
+        text-align: center;
+      }
+
+      @include mobile{
+        font-size: .7rem;
+      }
     }
 
     &__button{
@@ -256,7 +341,13 @@
       font-size: .8rem;
       line-height: 100%;
       color: #3D4A36;
+      box-sizing: border-box;
       transition: .5s;
+
+      @include mobile{
+        width: 100%;
+        height: 1.8rem;
+      }
 
       &:hover{
         background-color: #F07D2C;
@@ -272,10 +363,18 @@
     object-fit: cover;
     object-position: center;
     border-radius: 0 0 1.2rem 1.2rem;
+
+    @include tablet{
+      display: none;
+    }
   }
 }
 
 .questions{
+
+  @include tablet{
+    display: none;
+  }
 
   &__title{
     grid-column: 1 / -1;

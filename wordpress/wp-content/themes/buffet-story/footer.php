@@ -11,6 +11,7 @@
 
 ?>
 <div class="form container grid-12">
+    <div class="anchor" id="form"></div>
     <div class="form__inner">
         <div class="form__title">Рассчитайте кейтеринг или доставку еды на лучших условиях прямо сейчас</div>
         <?= do_shortcode('[contact-form-7 id="6c4e621" title="Форма для заявки"]'); ?>
@@ -19,13 +20,13 @@
         <iframe src="https://yandex.ru/map-widget/v1/?um=constructor%3Af2bfef15ec3a87015cc6c9906ef24e97719121c4a599aaad4c2dc1ae7333ff46&amp;source=constructor" width="660" height="586" frameborder="0"></iframe>
     </div>
 </div>
-<footer class="footer container grid-12">
+<footer class="footer container grid-12" id="contacts">
     <div class="footer__information">
         <a href="<?= home_url(); ?>" class="footer__information__logo">
             <img src="/wp-content/uploads/2025/09/logo_white.svg" alt="Логотип" loading="lazy">
         </a>
         <p class="footer__information__description"><?php the_field('footer_description', 10); ?></p>
-        <a href="<?php get_field('footer_policy', 10) ?>" class="footer__information__policy" target="_blank">Политика конфиденциальности</a>
+        <a href="<?= get_field('footer_policy', 10)['url']; ?>" class="footer__information__policy" target="_blank">Политика конфиденциальности</a>
     </div>
     <div class="footer__navigation">
         <div class="footer__navigation__title">Навигация</div>

@@ -6,7 +6,7 @@ Template Name: Кейтеринг
 get_header();
 ?>
     <main class="main page-catering">
-        <div class="hero container">
+        <div class="hero container container_first">
             <div class="hero__item" style="background-image: url('<?= get_field('banner_bg')['url']; ?>')">
                 <div class="hero__item__title"><?php the_field('banner_title'); ?></div>
                 <div class="hero__item__buttons">
@@ -27,7 +27,7 @@ get_header();
                                 <h3 class="catering__item__content__title"><?php the_sub_field('title'); ?></h3>
                                 <p class="catering__item__content__description"><?php the_sub_field('description'); ?></p>
                             </div>
-                            <button class="catering__item__content__button">Подробнее</button>
+                            <a href="#form" class="catering__item__content__button">Подробнее</a>
                         </div>
                     </div>
                 <?php

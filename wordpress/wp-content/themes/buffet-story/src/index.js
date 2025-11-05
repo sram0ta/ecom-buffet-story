@@ -5,13 +5,12 @@ window.addEventListener('DOMContentLoaded', function() {
     headerScroll();
     galleryBanner();
     galleryReviews();
-    catalogCategoryToggle();
     reviewsToggle();
     initAirPickers();
+    initAirPickers2();
     eventSelect();
     productGallery();
     productTab();
-    formCheck();
     stagesGallery();
     countAnimation();
 });
@@ -117,7 +116,7 @@ const stagesGallery = () => {
 const galleryReviews = () => {
     if (document.querySelector('#reviews-gallery')) {
         const swiper = new Swiper("#reviews-gallery", {
-            slidesPerView: 1.2, // по умолчанию (мобильная версия)
+            slidesPerView: 1.2,
             spaceBetween: DomUtils.remToPx(.4),
             speed: 500,
             loop: true,
@@ -155,43 +154,6 @@ const galleryBanner = () => {
     }
 }
 
-function catalogCategoryToggle() {
-    if (document.querySelector('.catalog__filters__category__title')) {
-        document.addEventListener("click", (e) => {
-            const title = e.target.closest(".catalog__filters__category__title");
-            if (!title) return;
-
-            const category = title.closest(".catalog__filters__category");
-            const list = category.querySelector(".catalog__filters__category__list");
-            if (!list) return;
-
-            const isOpen = category.classList.contains("active");
-
-            if (isOpen) {
-                list.style.maxHeight = list.scrollHeight + "px";
-                requestAnimationFrame(() => {
-                    list.style.maxHeight = "0px";
-                });
-                category.classList.remove("active");
-            } else {
-                // открыть
-                list.style.maxHeight = list.scrollHeight + "px";
-                category.classList.add("active");
-
-                list.addEventListener(
-                    "transitionend",
-                    function handler() {
-                        if (category.classList.contains("active")) {
-                            list.style.maxHeight = "none";
-                        }
-                        list.removeEventListener("transitionend", handler);
-                    }
-                );
-            }
-        });
-    }
-}
-
 const reviewsToggle = () => {
     if (document.querySelector('.questions__item')) {
         const items = document.querySelectorAll(".questions__item");
@@ -221,39 +183,63 @@ const reviewsToggle = () => {
 }
 
 function initAirPickers() {
-    document.querySelectorAll('input.date').forEach(function (el) {
-        if (el.dataset.apInited) return;
+    document.querySelectorAll('input.date1').forEach((el) => {
+        if (el.dataset.apInited === '1') return;
 
         new AirDatepicker(el, {
             autoClose: true,
             dateFormat: 'dd.MM.yyyy',
             locale: AirDatepicker.locales?.ru || {},
-            minDate: new Date()
+            minDate: new Date(),
         });
 
         el.dataset.apInited = '1';
     });
 }
 
-const eventSelect = () => {
-    if (document.querySelector('.select-event')) {
-        new Choices('.select-event', {
+function initAirPickers2() {
+    document.querySelectorAll('input.date2').forEach((el) => {
+        if (el.dataset.apInited === '1') return;
+
+        new AirDatepicker(el, {
+            autoClose: true,
+            dateFormat: 'dd.MM.yyyy',
+            locale: AirDatepicker.locales?.ru || {},
+            minDate: new Date(),
+        });
+
+        el.dataset.apInited = '1';
+    });
+}
+
+function eventSelect() {
+    document.querySelectorAll('.select-event').forEach((selectEl) => {
+        if (selectEl.dataset.choicesInited === '1') return;
+
+        new Choices(selectEl, {
             searchEnabled: false,
             itemSelectText: '',
         });
-    }
+
+        selectEl.dataset.choicesInited = '1';
+    });
 }
-
-
 
 const productGallery = () => {
     if (document.querySelector('.product__information__gallery__thumbs')) {
 
         const thumbs = new Swiper('.product__information__gallery__thumbs .swiper', {
-            direction: 'vertical',
-            slidesPerView: 2,
-            spaceBetween: DomUtils.remToPx(1.2),
+            direction: 'horizontal',
+            slidesPerView: 4,
+            spaceBetween: DomUtils.remToPx(.4),
             watchSlidesProgress: true,
+            breakpoints: {
+                576: {
+                    slidesPerView: 2,
+                    direction: 'vertical',
+                    spaceBetween: DomUtils.remToPx(1.2),
+                },
+            }
         });
 
         const main = new Swiper('.product__information__gallery__main .swiper', {
@@ -288,242 +274,106 @@ const productTab = () => {
     }
 }
 
-const formCheck = () => {
-    const form = document.querySelector('.wpcf7 form');
-    if (!form) return;
+// Инициализация для всех форм CF7 на странице
+(function formCheckInit() {
+    // --- helpers --------------------------------------------------------------
+    const findGroupCheckboxes = (toggleBtn, form) => {
+        const scope = toggleBtn.closest('.form__check_wrap') || toggleBtn;
+        let boxes = scope.querySelectorAll('.form__check_hide input[type="checkbox"]');
+        if (!boxes.length) {
+            // фоллбэк: вся форма (если .form__check_hide размещён отдельно)
+            boxes = form.querySelectorAll('.form__check_hide input[type="checkbox"]');
+        }
+        return Array.from(boxes);
+    };
 
-    const toggleBtn = form.querySelector('.form__check');
-    const hiddenCheckbox = form.querySelector('.form__check_hide input[type="checkbox"]');
-    const submitBtn = form.querySelector('.form__button');
+    const allChecked = (boxes) => boxes.length > 0 && boxes.every(cb => cb.checked);
 
-    if (toggleBtn && hiddenCheckbox) {
-        toggleBtn.addEventListener('click', () => {
-            hiddenCheckbox.checked = !hiddenCheckbox.checked;
-            toggleBtn.classList.toggle('active', hiddenCheckbox.checked);
-            toggleBtn.classList.remove('error');
+    const syncToggleUi = (toggleBtn, boxes) => {
+        const ok = allChecked(boxes);
+        toggleBtn.classList.toggle('active', ok);
+        if (ok) toggleBtn.classList.remove('error');
+    };
+
+    const attachToForm = (form) => {
+        if (form.dataset.formCheckBound === '1') return;
+        form.dataset.formCheckBound = '1';
+
+        const toggles = Array.from(form.querySelectorAll('.form__check'));
+        const submit  = form.querySelector('.form__button');
+
+        // первичная синхронизация и обработчики
+        toggles.forEach(toggleBtn => {
+            const boxes = findGroupCheckboxes(toggleBtn, form);
+            if (!boxes.length) return;
+
+            // синк UI на старте
+            syncToggleUi(toggleBtn, boxes);
+
+            // клик по визуальной «галке»
+            toggleBtn.addEventListener('click', () => {
+                const nextState = !allChecked(boxes);
+                boxes.forEach(cb => { cb.checked = nextState; });
+                syncToggleUi(toggleBtn, boxes);
+            });
+
+            // пользователь кликает по самим чекбоксам — поддержим
+            boxes.forEach(cb => {
+                cb.addEventListener('change', () => {
+                    syncToggleUi(toggleBtn, boxes);
+                });
+            });
         });
-    }
 
-    if (submitBtn && hiddenCheckbox && toggleBtn) {
-        submitBtn.addEventListener('click', (e) => {
-            if (!hiddenCheckbox.checked) {
-                toggleBtn.classList.add('error');
-            }
-        });
-    }
-}
+        // валидация перед отправкой
+        if (submit) {
+            submit.addEventListener('click', (e) => {
+                let valid = true;
 
-class CatalogFilter {
-    constructor(listSelector = '.catalog__list') {
-        this.list = document.querySelector(listSelector);
-        if (!this.list) return;
+                toggles.forEach(toggleBtn => {
+                    const boxes = findGroupCheckboxes(toggleBtn, form);
+                    if (!boxes.length) return;
 
-        this.slugToId = new Map();
-        this.bindEvents();
-        this.initFromURL();
-    }
+                    const ok = allChecked(boxes);
+                    toggleBtn.classList.toggle('error', !ok);
+                    if (!ok) valid = false;
+                });
 
-    qsa(sel){ return Array.from(document.querySelectorAll(sel)); }
-    qs(sel){ return document.querySelector(sel); }
-
-    clearActives() {
-        this.qsa(
-            '.catalog__category__button.active, ' +
-            '.catalog__filters__individual.active, ' +
-            '.catalog__filters__category__item.active'
-        ).forEach(el => el.classList.remove('active'));
-    }
-
-    getParentBtn(childBtn) {
-        const pid = childBtn?.dataset?.parentId;
-        if (pid) {
-            const parentBtn = this.qs(`.catalog__category__button[data-category-id="${pid}"]`);
-            if (parentBtn) return parentBtn;
+                if (!valid) {
+                    e.preventDefault();
+                    const firstError = form.querySelector('.form__check.error');
+                    firstError?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+            });
         }
-        const holder = childBtn?.closest('.catalog__filters__category[data-category]');
-        if (holder) {
-            const pid2 = holder.getAttribute('data-category');
-            if (pid2) {
-                const parentBtn = this.qs(`.catalog__category__button[data-category-id="${pid2}"]`);
-                if (parentBtn) return parentBtn;
+    };
+
+    // --- init на уже отрендеренные формы --------------------------------------
+    const mountAll = () => {
+        document.querySelectorAll('.wpcf7 form').forEach(attachToForm);
+    };
+
+    // DOMContentLoaded
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', mountAll);
+    } else {
+        mountAll();
+    }
+
+    // --- поддержка динамического появления/перерисовки (CF7, ajax, SPA) -------
+    const mo = new MutationObserver((mutations) => {
+        for (const m of mutations) {
+            if (m.type === 'childList' && (m.addedNodes?.length || m.removedNodes?.length)) {
+                document.querySelectorAll('.wpcf7 form').forEach(attachToForm);
             }
         }
-        return null;
-    }
+    });
+    mo.observe(document.documentElement, { childList: true, subtree: true });
 
-    applyActive(btn, alsoParent = false) {
-        this.clearActives();
-        if (btn) {
-            btn.classList.add('active');
-            if (alsoParent) {
-                const parentBtn = this.getParentBtn(btn);
-                if (parentBtn) parentBtn.classList.add('active');
-            }
-        }
-    }
+    document.addEventListener('wpcf7init', mountAll);
+    document.addEventListener('wpcf7reset', mountAll);
+})();
 
-    setLoading(on) {
-        if (on) {
-            const prevHeight = this.list.offsetHeight;
-            this.list.style.minHeight = prevHeight + 'px';
-            this.list.classList.add('is-loading');
-            this.list.innerHTML = '<div class="catalog__loading">Загрузка…</div>';
-        } else {
-            this.list.classList.remove('is-loading');
-            this.list.style.minHeight = '';
-        }
-    }
-
-    getTermFromURL() {
-        const url = new URL(window.location.href);
-        const qp  = url.searchParams.get('product_cat');
-        if (qp) return qp;
-
-        const parts = window.location.pathname.split('/').filter(Boolean);
-        if (!parts.length) return null;
-
-        const bases = new Set(['product-category', 'catalog']);
-        for (let i = 0; i < parts.length; i++) {
-            if (bases.has(parts[i])) {
-                const tail = parts.slice(i + 1).filter(Boolean);
-                if (tail.length) return tail[tail.length - 1];
-                return null;
-            }
-        }
-        const last = parts[parts.length - 1];
-        if (!['product-category', 'catalog'].includes(last)) return last;
-        return null;
-    }
-
-    pushCategoryURL(slug, urlOverride = null) {
-        if (slug) {
-            const finalUrl = urlOverride || (() => {
-                const u = new URL(window.location.href);
-                u.searchParams.set('product_cat', slug);
-                return u.toString();
-            })();
-            history.pushState({ product_cat: slug }, '', finalUrl);
-            return;
-        }
-
-        if (window.CATFILTER?.base_url) {
-            history.pushState({ product_cat: null }, '', CATFILTER.base_url);
-            return;
-        }
-
-        const u = new URL(window.location.href);
-        u.searchParams.delete('product_cat');
-        history.pushState({ product_cat: null }, '', u.toString());
-    }
-
-    async fetchProductsByTermId(termId) {
-        const fd = new FormData();
-        fd.append('action', 'buffet_filter_products');
-        fd.append('nonce',  CATFILTER.nonce);
-        fd.append('term_id', termId);
-
-        const res  = await fetch(CATFILTER.ajax_url, { method: 'POST', body: fd });
-        const data = await res.json();
-        if (data?.success) {
-            this.list.innerHTML = data.data.html || '<div class="catalog__empty">Товары не найдены</div>';
-        } else {
-            this.list.innerHTML = '<div class="catalog__empty">Ошибка загрузки</div>';
-        }
-    }
-
-    async initFromURL() {
-        const slug = this.getTermFromURL();
-
-        if (!slug) {
-            this.clearActives();
-            return;
-        }
-
-        const btn = this.qs(
-            `.catalog__category__button[data-category-slug="${slug}"],
-       .catalog__filters__individual[data-category-slug="${slug}"],
-       .catalog__filters__category__item[data-category-slug="${slug}"]`
-        );
-
-        let termId = 0;
-        if (btn) {
-            const alsoParent =
-                btn.classList.contains('catalog__filters__individual') ||
-                btn.classList.contains('catalog__filters__category__item');
-            this.applyActive(btn, alsoParent);
-            termId = parseInt(btn.dataset.categoryId || '0', 10) || 0;
-        } else if (this.slugToId.has(slug)) {
-            termId = this.slugToId.get(slug);
-        }
-
-        if (termId > 0) {
-            this.setLoading(true);
-            try {
-                await this.fetchProductsByTermId(termId);
-            } finally {
-                this.setLoading(false);
-                if (typeof applyCartStateToUI === 'function') applyCartStateToUI();
-            }
-        }
-    }
-
-    bindEvents() {
-        document.addEventListener('click', (e) => this.onClick(e));
-        window.addEventListener('popstate', () => this.initFromURL());
-    }
-
-    async onClick(e) {
-        const btn =
-            e.target.closest('.catalog__category__button') ||
-            e.target.closest('.catalog__filters__individual') ||
-            e.target.closest('.catalog__filters__category__item');
-
-        if (!btn) return;
-
-        if (btn.tagName === 'A') e.preventDefault();
-
-        const termId = parseInt(btn.dataset.categoryId || '0', 10) || 0;
-        const slug   = btn.dataset.categorySlug || '';
-        const url    = btn.dataset.url || btn.getAttribute('href') || null;
-
-        const isCategoryBtn = btn.classList.contains('catalog__category__button');
-        const isIndividual  = btn.classList.contains('catalog__filters__individual');
-        const isChild       = btn.classList.contains('catalog__filters__category__item');
-
-        if (btn.classList.contains('active')) {
-            this.clearActives();
-            btn.blur();
-            this.setLoading(true);
-            try {
-                await this.fetchProductsByTermId(0);
-                this.pushCategoryURL(null);
-            } finally {
-                this.setLoading(false);
-                if (typeof applyCartStateToUI === 'function') applyCartStateToUI();
-            }
-            return;
-        }
-
-        const alsoParent = isIndividual || isChild;
-        this.applyActive(btn, alsoParent);
-
-        if (slug && termId) this.slugToId.set(slug, termId);
-
-        this.setLoading(true);
-        try {
-            await this.fetchProductsByTermId(termId);
-            if (slug) this.pushCategoryURL(slug, url);
-            else this.pushCategoryURL(null);
-        } finally {
-            this.setLoading(false);
-            if (typeof applyCartStateToUI === 'function') applyCartStateToUI();
-        }
-    }
-}
-
-document.addEventListener('DOMContentLoaded', () => {
-    new CatalogFilter();
-});
 
 const countAnimation = () => {
     const counters = document.querySelectorAll(".about__number__count");
@@ -563,3 +413,294 @@ const countAnimation = () => {
     }
 
 }
+
+document.addEventListener('DOMContentLoaded', () => {
+    const CF = window.CATFILTER || {};
+    const baseURL = ensureSlash(CF.base_url || (location.origin + '/catalog/'));
+    const list = document.querySelector('.catalog__list');
+    if (!list) return;
+
+    let currentTopCatTermId = 0;
+    let activeProductTypeTermId = 0;
+
+    primeOriginalHrefs('.catalog__category__button, .catalog__filters__individual');
+    initFromURL(true);
+
+    document.addEventListener('click', async (e) => {
+        const link = e.target.closest('.catalog__category__button, .catalog__filters__individual');
+        if (!link || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+
+        e.preventDefault();
+
+        const targetHref = link.getAttribute('href') || link.dataset.hrefOriginal || '';
+        const targetURL = new URL(targetHref, location.origin);
+        const isResetToCatalog = normalizePath(targetURL.pathname) === normalizePath(new URL(baseURL).pathname);
+
+        const termId = isResetToCatalog ? 0 : termIdFromLink(link, targetURL.pathname);
+
+        currentTopCatTermId = termId;
+        activeProductTypeTermId = 0;
+
+        document.querySelectorAll('.catalog__filters__category__item').forEach(b => {
+            b.classList.remove('active', 'is-zero');
+            b.setAttribute('aria-pressed', 'false');
+            b.removeAttribute('aria-disabled');
+            b.removeAttribute('hidden');
+        });
+
+        await loadAndRender(
+            { catTermId: currentTopCatTermId, productTypeTermId: 0 },
+            targetURL.toString(),
+            true
+        );
+    });
+
+    document.addEventListener('click', async (e) => {
+        const btn = e.target.closest('.catalog__filters__category__item');
+        if (!btn || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+
+        e.preventDefault();
+
+        const termId = parseInt(btn.dataset.productCategory || '0', 10) || 0;
+
+        // Тоггл: повторный клик по активной — снимаем фильтр
+        const willActivate = activeProductTypeTermId !== termId;
+        activeProductTypeTermId = willActivate ? termId : 0;
+
+        // Подсветка/ARIA
+        document.querySelectorAll('.catalog__filters__category__item').forEach(el => {
+            const id = parseInt(el.dataset.productCategory || '0', 10) || 0;
+            const isActive = activeProductTypeTermId > 0 && id === activeProductTypeTermId;
+            el.classList.toggle('active', isActive);
+            el.setAttribute('aria-pressed', isActive ? 'true' : 'false');
+        });
+
+        // Загружаем с учетом ОБОИХ фильтров (product_cat + product-type)
+        await loadAndRender(
+            { catTermId: currentTopCatTermId, productTypeTermId: activeProductTypeTermId },
+            /*urlToShow*/ null,
+            /*push*/ false
+        );
+    });
+
+    // ===== Назад/вперёд — из URL восстанавливаем только product_cat; product-type сбрасываем =====
+    window.addEventListener('popstate', () => initFromURL(/*replaceState=*/false));
+
+    // ================= helpers =================
+
+    function primeOriginalHrefs(selector) {
+        document.querySelectorAll(selector).forEach(a => {
+            if (!a.dataset.hrefOriginal) a.dataset.hrefOriginal = a.getAttribute('href') || '';
+        });
+    }
+
+    function ensureSlash(u) {
+        try {
+            const url = new URL(u, location.origin);
+            if (!url.pathname.endsWith('/')) url.pathname += '/';
+            return url.toString();
+        } catch { return u; }
+    }
+
+    function normalizePath(p) { return p.endsWith('/') ? p : (p + '/'); }
+    function safePath(href) { try { return new URL(href, location.origin).pathname; } catch { return ''; } }
+
+    function termIdFromLink(link, pathMaybe) {
+        if (pathMaybe) {
+            const targetPath = normalizePath(pathMaybe);
+            const candidate = Array.from(document.querySelectorAll('.catalog__category__button'))
+                .find(a => normalizePath(safePath(a.dataset.hrefOriginal || a.getAttribute('href') || '')) === targetPath);
+            const byPathId = parseInt(candidate?.dataset?.categoryId || '0', 10) || 0;
+            if (byPathId) return byPathId;
+        }
+        return parseInt(link?.dataset?.categoryId || '0', 10) || 0;
+    }
+
+    async function fetchProductsCombined(catTermId, productTypeTermId) {
+        const fd = new FormData();
+        fd.append('action', 'buffet_filter_products');
+        fd.append('nonce', CF.nonce || '');
+
+        if (catTermId > 0)         fd.append('cat_term_id', catTermId);
+        if (productTypeTermId > 0) fd.append('product_type_term_id', productTypeTermId);
+
+        const res = await fetch(CF.ajax_url, { method: 'POST', body: fd });
+        const data = await res.json();
+        if (!data?.success) throw new Error('AJAX error');
+        return data.data;
+    }
+
+    async function loadAndRender({ catTermId, productTypeTermId }, urlToShow, push) {
+        setLoading(true);
+        try {
+            const data = await fetchProductsCombined(catTermId, productTypeTermId);
+            list.innerHTML = data.html || '<div class="catalog__empty">Товары не найдены</div>';
+
+            if (push) {
+                const target = new URL(urlToShow || baseURL, location.origin).toString();
+                history.pushState({ catTermId, productTypeTermId }, '', target);
+            }
+
+            applyActiveStatesForTop(catTermId);
+
+            // SEO по желанию
+            if (data.seo) applySEO(data.seo);
+
+            updateProductTypeCountsUI(
+                data.product_type_counts || {},
+                productTypeTermId || 0,
+                typeof data.count === 'number' ? data.count : undefined
+            );
+        } catch (e) {
+            console.error(e);
+            list.innerHTML = '<div class="catalog__empty">Ошибка загрузки</div>';
+        } finally {
+            setLoading(false);
+        }
+    }
+
+    function updateProductTypeCountsUI(countMap, activeProductTypeTermId, currentResultCount) {
+        document.querySelectorAll('.catalog__filters__category__item').forEach(btn => {
+            const id = parseInt(btn.dataset.productCategory || '0', 10) || 0;
+            const counter = btn.querySelector('.catalog__filters__category__item__count');
+            if (!counter) return;
+
+            const isActive = activeProductTypeTermId > 0 && id === activeProductTypeTermId;
+            const count = isActive
+                ? (typeof currentResultCount === 'number' ? currentResultCount : (countMap?.[id] || 0))
+                : (countMap && typeof countMap[id] !== 'undefined' ? countMap[id] : 0);
+
+            counter.textContent = String(count);
+
+            const zero = count === 0;
+            const shouldHide = zero && !isActive;
+
+            btn.classList.toggle('is-zero', shouldHide);
+            btn.setAttribute('aria-disabled', shouldHide ? 'true' : 'false');
+
+            if (shouldHide) btn.setAttribute('hidden', '');
+            else btn.removeAttribute('hidden');
+        });
+    }
+
+    function setLoading(on) {
+        if (on) {
+            const h = list.offsetHeight;
+            list.style.minHeight = h + 'px';
+            list.innerHTML = '<div class="catalog__loading">Загрузка…</div>';
+        } else {
+            list.style.minHeight = '';
+        }
+    }
+
+    function applySEO(seo) {
+        if (seo.title) document.title = seo.title;
+        const sel = 'meta[name="description"]';
+        let md = document.querySelector(sel);
+        if (!md) {
+            md = document.createElement('meta');
+            md.setAttribute('name', 'description');
+            document.head.appendChild(md);
+        }
+        if (typeof seo.description === 'string') md.setAttribute('content', seo.description);
+        let canon = document.querySelector('link[rel="canonical"]');
+        if (!canon) {
+            canon = document.createElement('link');
+            canon.setAttribute('rel', 'canonical');
+            document.head.appendChild(canon);
+        }
+        if (seo.url) canon.setAttribute('href', seo.url);
+    }
+
+    function applyActiveStatesForTop(catTermId) {
+        document.querySelectorAll('.catalog__category__button').forEach(link => {
+            if (!link.dataset.hrefOriginal) link.dataset.hrefOriginal = link.getAttribute('href') || '';
+            const id = parseInt(link.dataset.categoryId || '0', 10) || 0;
+            const same = id === (catTermId || 0);
+            link.classList.toggle('active', same);
+            link.setAttribute('href', same ? baseURL : link.dataset.hrefOriginal);
+        });
+    }
+
+    async function initFromURL(replaceState) {
+        const path = normalizePath(location.pathname);
+        const link = Array.from(document.querySelectorAll('.catalog__category__button'))
+            .find(a => normalizePath(safePath(a.dataset.hrefOriginal || a.getAttribute('href') || '')) === path);
+
+        currentTopCatTermId = termIdFromLink(link, path);
+
+        activeProductTypeTermId = 0;
+        document.querySelectorAll('.catalog__filters__category__item').forEach(b => {
+            b.classList.remove('active', 'is-zero');
+            b.setAttribute('aria-pressed', 'false');
+            b.removeAttribute('aria-disabled');
+            b.removeAttribute('hidden');
+        });
+
+        const urlToShow = link ? (link.dataset.hrefOriginal || link.getAttribute('href')) : baseURL;
+
+        await loadAndRender(
+            { catTermId: currentTopCatTermId, productTypeTermId: 0 },
+            urlToShow,
+            !replaceState
+        );
+    }
+
+    function ensureSlash(u) {
+        try {
+            const url = new URL(u, location.origin);
+            if (!url.pathname.endsWith('/')) url.pathname += '/';
+            return url.toString();
+        } catch { return u; }
+    }
+});
+
+function initPhoneMasks(context = document) {
+    const inputs = context.querySelectorAll('input.wpcf7-tel');
+    if (!inputs.length) return;
+
+    inputs.forEach(input => {
+        if (input.dataset.maskInited === '1') return;
+
+        input.addEventListener('input', onPhoneInput, false);
+        input.addEventListener('focus', onPhoneInput, false);
+        input.addEventListener('blur', onPhoneBlur, false);
+        input.addEventListener('keydown', onPhoneKeyDown, false);
+
+        input.dataset.maskInited = '1';
+    });
+
+    function onPhoneKeyDown(e) {
+        const keyCode = e.keyCode;
+        if (keyCode === 8 && input.selectionStart <= 3) {
+            e.preventDefault();
+        }
+    }
+
+    function onPhoneInput(e) {
+        let matrix = '+7 (___) ___-__-__',
+            i = 0,
+            def = matrix.replace(/\D/g, ''),
+            val = e.target.value.replace(/\D/g, '');
+        if (def.length >= val.length) val = def;
+        e.target.value = matrix.replace(/./g, function (a) {
+            return /[_\d]/.test(a) && i < val.length
+                ? val.charAt(i++)
+                : i >= val.length
+                    ? ''
+                    : a;
+        });
+    }
+
+    function onPhoneBlur(e) {
+        if (e.target.value.replace(/\D/g, '').length <= 2) {
+            e.target.value = '';
+        }
+    }
+}
+
+document.addEventListener('DOMContentLoaded', () => initPhoneMasks());
+
+document.addEventListener('wpcf7submit', () => initPhoneMasks());
+document.addEventListener('wpcf7mailsent', () => initPhoneMasks());
+document.addEventListener('wpcf7invalid', () => initPhoneMasks());

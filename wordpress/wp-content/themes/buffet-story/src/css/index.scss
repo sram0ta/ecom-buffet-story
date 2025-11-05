@@ -97,6 +97,13 @@ body{
   }
 }
 
+.anchor{
+  position: absolute;
+  top: -5rem;
+  pointer-events: none;
+  visibility: hidden;
+}
+
 @import "inc/_header";
 @import "pages/_main";
 @import "pages/_catalog";
