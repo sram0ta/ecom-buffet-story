@@ -214,7 +214,9 @@ get_header();
                 global $product;
                 ?>
                 <div class="product-item">
-                    <img src="<?php the_post_thumbnail_url(); ?>" alt="" class="product-item__image">
+                    <a href="<?php the_permalink(); ?>">
+                        <img src="<?php the_post_thumbnail_url(); ?>" alt="" class="product-item__image">
+                    </a>
                     <div class="product-item__content">
                         <div class="product-item__content__inner">
                             <h3 class="product-item__content__title"><?php the_title(); ?></h3>

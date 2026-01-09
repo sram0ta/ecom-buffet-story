@@ -21,7 +21,9 @@ function buffet_render_product_card( WC_Product $product ) {
                 <div class="product-item__tag__title"><?= get_field('product_tag')->name; ?></div>
             </div>
         <?php endif; ?>
-        <img src="<?= esc_url( get_the_post_thumbnail_url($post_id)); ?>" alt="<?= esc_attr(get_the_title($post_id)); ?>" class="product-item__image" loading="lazy">
+        <a href="<?php the_permalink(); ?>">
+            <img src="<?= esc_url( get_the_post_thumbnail_url($post_id)); ?>" alt="<?= esc_attr(get_the_title($post_id)); ?>" class="product-item__image" loading="lazy">
+        </a>
         <div class="product-item__content">
             <div class="product-item__content__wrapper">
                 <div class="product-item__content__inner">

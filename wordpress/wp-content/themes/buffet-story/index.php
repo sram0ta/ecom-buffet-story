@@ -83,12 +83,20 @@ get_header();
         <div class="product-block__title">Популярные фуршетные наборы на любой повод</div>
         <div class="product-block__list grid-12">
             <?php
-                $args = [
-                    'post_type'      => 'product',
-                    'posts_per_page' => 4,
-                    'orderby'        => 'date',
-                    'order'          => 'DESC',
-                ];
+            $args = [
+                'post_type' => 'product',
+                'taxonomy' => 'gotovye-boksy',
+                'posts_per_page' => 4,
+                'post_status' => 'publish',
+                'orderby' => 'rand',
+                'tax_query' => [
+                    [
+                        'taxonomy' => 'product_cat',
+                        'field'    => 'slug',
+                        'terms'    => ['gotovye-boksy'],
+                    ],
+                ],
+            ];
                 $loop = new WP_Query($args);
 
                 while ($loop->have_posts()) : $loop->the_post();
@@ -105,7 +113,9 @@ get_header();
                                 <div class="product-item__tag__title"><?= get_field('product_tag')->name; ?></div>
                             </div>
                         <?php endif; ?>
-                        <img src="<?php the_post_thumbnail_url(); ?>" alt="" class="product-item__image">
+                        <a href="<?php the_permalink(); ?>">
+                            <img src="<?php the_post_thumbnail_url(); ?>" alt="" class="product-item__image">
+                        </a>
                         <div class="product-item__content">
                             <div class="product-item__content_wrapper">
                                 <div class="product-item__content__inner">

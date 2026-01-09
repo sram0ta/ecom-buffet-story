@@ -1912,7 +1912,31 @@ body.fixed {
 }
 
 .wpcf7-response-output {
+  display: none;
+}
+
+.invalid .wpcf7-response-output {
   display: none !important;
+}
+
+.sent .wpcf7-response-output {
+  position: absolute;
+  bottom: 1rem;
+  display: block !important;
+  font-family: Manrope;
+  font-weight: 400;
+  font-size: 0.7rem;
+  line-height: 130%;
+  color: #46b450;
+  text-align: left;
+  border: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+@media (max-width: 576px) {
+  .sent .wpcf7-response-output {
+    bottom: 0.25rem;
+  }
 }
 
 @media (max-width: 576px) {
