@@ -508,11 +508,9 @@ function recalcPopupGrandTotal() {
 function recalcPopupProductTotal(productId, qtyMaybe) {
     const row = document.querySelector(`.popup__content__products__item[data-product-id="${productId}"]`);
     if (!row) return;
-    // если qty не передали — возьмём из DOM
     if (typeof qtyMaybe !== 'number') {
         qtyMaybe = getQtyForRow(row);
     } else {
-        // синхронизируем цифру в DOM, если нужно
         const qtyEl = row.querySelector('.product-item__content__buttons__count-number');
         if (qtyEl) qtyEl.textContent = qtyMaybe;
     }
@@ -572,3 +570,64 @@ document.addEventListener('wpcf7mailsent', async (e) => {
         console.error('Ошибка очистки корзины после отправки формы:', err);
     }
 }, false);
+
+// +700 руб. к общей сумме при выборе доставки
+(function () {
+    const DELIVERY_TEXT = 'Доставка 700 рублей по Ростову-на-Дону';
+    const DELIVERY_COST = 700;
+
+    function getSelectedDeliveryValue() {
+        const sel = document.querySelector('select[name="select-713"]');
+        if (!sel) return null;
+
+        const val = (sel.value || '').trim();
+        return val || null;
+    }
+
+    function isDeliverySelected() {
+        const v = getSelectedDeliveryValue();
+        if (!v) return false;
+        return v === DELIVERY_TEXT;
+    }
+
+    function applyDeliveryToGrandTotal() {
+        const out = document.querySelector('.popup__content__all-price__coast');
+        if (!out) return;
+
+        const base = parseLocaleNumberLike(out.textContent);
+        if (!Number.isFinite(base)) return;
+
+        const add = isDeliverySelected() ? DELIVERY_COST : 0;
+
+        const currency = '₽';
+        out.textContent = formatMoneyRU(base + add, currency, 0);
+    }
+
+    function hookDeliveryChange() {
+        const sel = document.querySelector('select[name="select-713"]');
+        if (!sel) return;
+
+        sel.addEventListener('change', () => {
+            recalcPopupGrandTotal();
+            applyDeliveryToGrandTotal();
+        });
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        hookDeliveryChange();
+
+        recalcPopupGrandTotal();
+        applyDeliveryToGrandTotal();
+    });
+
+    const _refreshCartPopup = window.refreshCartPopup;
+    if (typeof _refreshCartPopup === 'function') {
+        window.refreshCartPopup = async function () {
+            const res = await _refreshCartPopup.apply(this, arguments);
+            hookDeliveryChange();
+            recalcPopupGrandTotal();
+            applyDeliveryToGrandTotal();
+            return res;
+        };
+    }
+})();
