@@ -69,6 +69,33 @@ function buffet_render_product_card( WC_Product $product ) {
     return ob_get_clean();
 }
 
+function buffet_render_search_product_item( WC_Product $product ) {
+    $product_id   = $product->get_id();
+    $title        = $product->get_name();
+    $permalink    = get_permalink( $product_id );
+    $image        = get_the_post_thumbnail_url( $product_id );
+    $description  = get_field( 'boxing_composition', $product_id );
+    $description  = $description ? wp_strip_all_tags( $description ) : wp_strip_all_tags( $product->get_short_description() );
+    $description  = wp_trim_words( $description, 300, '...' );
+
+    ob_start();
+    ?>
+    <a href="<?php echo esc_url( $permalink ); ?>" class="search-content__item">
+        <?php if ( $image ) : ?>
+            <img src="<?php echo esc_url( $image ); ?>" alt="<?php echo esc_attr( $title ); ?>" class="search-content__item__image" loading="lazy">
+        <?php endif; ?>
+        <span class="search-content__item__inner">
+            <span class="search-content__item__title"><?php echo esc_html( $title ); ?></span>
+            <?php if ( $description ) : ?>
+                <span class="search-content__item__description"><?php echo esc_html( $description ); ?></span>
+            <?php endif; ?>
+        </span>
+    </a>
+    <?php
+
+    return ob_get_clean();
+}
+
 function buffet_filter_products() {
     check_ajax_referer('catalog_filter_nonce', 'nonce');
 
@@ -228,7 +255,7 @@ function buffet_filter_products() {
             echo buffet_render_product_card( $product );
         }
     } else {
-        echo '<div class="catalog__empty">Товары не найдены</div>';
+        echo '<div class="catalog__empty">По Вашему запросу ничего не найдено :(</div>';
     }
     wp_reset_postdata();
 
@@ -242,3 +269,65 @@ function buffet_filter_products() {
 
 add_action('wp_ajax_buffet_filter_products', 'buffet_filter_products');
 add_action('wp_ajax_nopriv_buffet_filter_products', 'buffet_filter_products');
+
+function buffet_search_products() {
+    check_ajax_referer( 'buffet_search_nonce', 'nonce' );
+
+    $search = isset( $_POST['search'] ) ? sanitize_text_field( wp_unslash( $_POST['search'] ) ) : '';
+    $search = trim( $search );
+
+    if ( $search === '' ) {
+        wp_send_json_success([
+            'html'  => '',
+            'count' => 0,
+            'text'  => '',
+        ]);
+    }
+
+    $query = new WP_Query([
+        'post_type'              => 'product',
+        'post_status'            => 'publish',
+        'posts_per_page'         => 20,
+        's'                      => $search,
+        'orderby'                => 'date',
+        'order'                  => 'DESC',
+        'ignore_sticky_posts'    => true,
+        'no_found_rows'          => false,
+        'update_post_meta_cache' => false,
+        'update_post_term_cache' => false,
+    ]);
+
+    ob_start();
+
+    if ( $query->have_posts() ) {
+        while ( $query->have_posts() ) {
+            $query->the_post();
+            $product = wc_get_product( get_the_ID() );
+
+            if ( ! $product ) {
+                continue;
+            }
+
+            echo buffet_render_search_product_item( $product );
+        }
+    } else {
+        echo '<div class="search-content__empty">По Вашему запросу ничего не найдено :(</div>';
+    }
+
+    $html = ob_get_clean();
+    $count = (int) $query->found_posts;
+    wp_reset_postdata();
+
+    $text = $count > 0
+        ? sprintf( 'Найдено товаров: %d', $count )
+        : 'По Вашему запросу ничего не найдено :(';
+
+    wp_send_json_success([
+        'html'  => $html,
+        'count' => $count,
+        'text'  => $text,
+    ]);
+}
+
+add_action( 'wp_ajax_buffet_search_products', 'buffet_search_products' );
+add_action( 'wp_ajax_nopriv_buffet_search_products', 'buffet_search_products' );

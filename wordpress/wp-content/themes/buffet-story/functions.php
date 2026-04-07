@@ -85,6 +85,11 @@ function buffet_story_scripts() {
     wp_enqueue_script( 'main-js',   get_stylesheet_directory_uri() . '/src/index.js', [ 'swiper-js' ], null, true );
     wp_enqueue_script( 'cart-js',   get_stylesheet_directory_uri() . '/src/cart.js', [], null, true );
 
+    wp_localize_script( 'main-js', 'BUFFET_SEARCH', [
+        'ajax_url' => admin_url( 'admin-ajax.php' ),
+        'nonce'    => wp_create_nonce( 'buffet_search_nonce' ),
+    ] );
+
 
     // Состояние корзины -> MYCART
     $cart_map = [];

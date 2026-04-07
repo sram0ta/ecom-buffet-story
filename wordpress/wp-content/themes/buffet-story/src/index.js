@@ -1,5 +1,6 @@
 window.addEventListener('DOMContentLoaded', function() {
     openMenu();
+    initHeaderSearch();
     advantagesGallery();
     platformsGallery();
     headerScroll();
@@ -45,6 +46,160 @@ const openMenu = () => {
         })
     }
 }
+
+const initHeaderSearch = () => {
+    const trigger = document.querySelector('.header__search');
+    const search = document.querySelector('.search');
+    const exit = document.querySelector('.search__exit');
+    const input = document.querySelector('.search__input');
+    const clear = document.querySelector('.search__clear');
+    const content = document.querySelector('.search-content');
+    const found = document.querySelector('.search-content__found');
+    const list = document.querySelector('.search-content__list');
+    const ajaxConfig = window.BUFFET_SEARCH || {};
+
+    if (!trigger || !search || !exit || !input || !clear || !content || !found || !list) {
+        return;
+    }
+
+    let debounceTimer = null;
+    let activeController = null;
+    let requestId = 0;
+
+    const syncBodyFixedState = () => {
+        document.body.classList.toggle('fixed', content.classList.contains('active'));
+    };
+
+    const setClearState = () => {
+        clear.classList.toggle('active', input.value.trim().length > 0);
+    };
+
+    const resetResults = () => {
+        found.textContent = '';
+        list.innerHTML = '';
+        content.classList.remove('active');
+        syncBodyFixedState();
+    };
+
+    const openSearch = () => {
+        search.classList.add('active');
+        input.focus();
+        setClearState();
+    };
+
+    const closeSearch = () => {
+        search.classList.remove('active');
+        input.value = '';
+        setClearState();
+        resetResults();
+
+        if (activeController) {
+            activeController.abort();
+            activeController = null;
+        }
+    };
+
+    const renderLoading = () => {
+        found.textContent = 'Ищем товары...';
+        list.innerHTML = '';
+        content.classList.add('active');
+        syncBodyFixedState();
+    };
+
+    const renderResults = (data) => {
+        const count = Number(data?.count || 0);
+
+        if (count > 0) {
+            found.textContent = data.text || '';
+            list.innerHTML = data.html || '';
+        } else {
+            found.textContent = '';
+            list.innerHTML = data.html || '<div class="search-content__empty">По Вашему запросу ничего не найдено :(</div>';
+        }
+
+        content.classList.toggle('active', input.value.trim().length > 0);
+        syncBodyFixedState();
+    };
+
+    const performSearch = async () => {
+        const value = input.value.trim();
+        requestId += 1;
+        const currentRequestId = requestId;
+
+        if (activeController) {
+            activeController.abort();
+        }
+
+        if (!value.length) {
+            activeController = null;
+            resetResults();
+            return;
+        }
+
+        activeController = new AbortController();
+
+        const formData = new FormData();
+        formData.append('action', 'buffet_search_products');
+        formData.append('nonce', ajaxConfig.nonce || '');
+        formData.append('search', value);
+
+        renderLoading();
+
+        try {
+            const response = await fetch(ajaxConfig.ajax_url || '/wp-admin/admin-ajax.php', {
+                method: 'POST',
+                body: formData,
+                signal: activeController.signal,
+            });
+            const result = await response.json();
+
+            if (currentRequestId !== requestId || !result?.success) {
+                return;
+            }
+
+            renderResults(result.data || {});
+        } catch (error) {
+            if (error.name === 'AbortError') {
+                return;
+            }
+
+            found.textContent = '';
+            list.innerHTML = '<div class="search-content__empty">Не удалось загрузить результаты</div>';
+            content.classList.add('active');
+            syncBodyFixedState();
+        } finally {
+            if (currentRequestId === requestId) {
+                activeController = null;
+            }
+        }
+    };
+
+    trigger.addEventListener('click', openSearch);
+    exit.addEventListener('click', closeSearch);
+    clear.addEventListener('click', () => {
+        input.value = '';
+        setClearState();
+        resetResults();
+        input.focus();
+
+        if (activeController) {
+            activeController.abort();
+            activeController = null;
+        }
+    });
+
+    input.addEventListener('input', () => {
+        setClearState();
+        window.clearTimeout(debounceTimer);
+        debounceTimer = window.setTimeout(performSearch, 250);
+    });
+
+    input.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape') {
+            closeSearch();
+        }
+    });
+};
 
 const advantagesGallery = () => {
     if (window.innerWidth > 1024) return;

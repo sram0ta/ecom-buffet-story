@@ -71,6 +71,11 @@
         ?>
     </nav>
     <div class="header__buttons">
+        <div class="header__search">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M23 23L17.9332 17.9332M17.9332 17.9332C18.7999 17.0665 19.4874 16.0376 19.9565 14.9052C20.4255 13.7728 20.6669 12.5592 20.6669 11.3335C20.6669 10.1078 20.4255 8.89409 19.9565 7.7617C19.4874 6.62932 18.7999 5.6004 17.9332 4.73371C17.0665 3.86702 16.0376 3.17952 14.9052 2.71047C13.7728 2.24142 12.5592 2 11.3335 2C10.1078 2 8.89409 2.24142 7.7617 2.71047C6.62932 3.17952 5.6004 3.86702 4.73371 4.73371C2.98334 6.48407 2 8.85808 2 11.3335C2 13.8089 2.98334 16.1829 4.73371 17.9332C6.48407 19.6836 8.85808 20.6669 11.3335 20.6669C13.8089 20.6669 16.1829 19.6836 17.9332 17.9332Z" stroke="white" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+        </div>
         <div class="header__cart" data-count="">
             <div class="header__cart__count"></div>
             <svg width="26" height="24" viewBox="0 0 26 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -106,6 +111,23 @@
     <div class="menu-navigation__inner">
         <a href="#form" class="menu-navigation__button">Связаться с нами</a>
     </div>
+</div>
+<div class="search">
+    <div class="search__inner">
+        <input type="text" class="search__input" placeholder="Введите название">
+        <svg class="search__clear" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M14.7619 14.7618L5.2381 5.23804M14.7619 5.23804L5.2381 14.7618" stroke="#3D4A36" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+    </div>
+    <button class="search__exit" type="button">
+        <svg width="46" height="46" viewBox="0 0 46 46" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M33.9524 33.9524L12.0476 12.0476M33.9524 12.0476L12.0476 33.9524" stroke="#3D4A36" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+    </button>
+</div>
+<div class="search-content">
+    <div class="search-content__found"></div>
+    <div class="search-content__list"></div>
 </div>
 <div class="popup">
     <div class="popup__background"></div>
